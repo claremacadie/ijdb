@@ -33,12 +33,11 @@ public function list() {
 	//Use total (defined in DatabaseFunctions.php) to return the total number of jokes
 	$totalJokes = $this->jokesTable->total();
 	
-	//ob_start starts a buffer that gets filled by the include file and then output to the website at the end
-	ob_start();
-	include __DIR__ . '/../templates/jokes.html.php';
-	$output = ob_get_clean();
-
-	return ['output' => $output, 'title' => $title];
+	return [
+	'template' => 'jokes.html.php', 
+	'title' => $title, 
+	'variables' => ['totalJokes' => $totalJokes, 'jokes' => $jokes]
+	];
 
 }
 
@@ -47,14 +46,8 @@ public function list() {
 
 public function home() {
 	$title = 'Internet Joke Database';
-	echo ('string');
-	ob_start();
-
-	include __DIR__ . '/../templates/home.html.php';
-
-	$output = ob_get_clean();
-
-	return ['output' => $output, 'title' => $title];
+	
+	return ['template' => 'home.html.php', 'title' => $title];
 }
 
 
@@ -62,7 +55,7 @@ public function delete() {
 	$this->jokesTable->delete($_POST['id']);
 	
 	//Send the browser to jokes.php
-	header('location: jokes.php');
+	header('location: index.php?action=list');
 	
 }
 
@@ -81,7 +74,7 @@ public function edit() {
 		$output = '';
 		
 		//Send the browser to jokes.php
-		header('location: jokes.php');
+		header('location: index.php?action=list');
 	
 	//If nothing has yet been entered into the text box, it retrieves the joke to be edited
 	//findById is defined in DatabaseFunctions.php
@@ -93,12 +86,11 @@ public function edit() {
 		//Set variable 'title' for use in the include file
 		$title = 'Edit joke';
 		
-		//ob_start starts a buffer that gets filled by the include file and then output to the website at the end
-		ob_start();
-		include __DIR__ . '/../templates/editjoke.html.php';
-		$output = ob_get_clean();
-
-		return ['output' => $output, 'title' => $title];
+		return [
+		'template' => 'edit.html.php', 
+		'title' => $title,
+		'variables' => ['joke' => $joke ?? null]
+		];
 
 	}
 }
