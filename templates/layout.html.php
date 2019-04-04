@@ -1,6 +1,6 @@
 <!doctype html>
 <!This files sets the layout for the jokedatabase website using the jokes.css file>
-
+<!The action=list/edit is passed to index.php to use in the loadTemplate function>
 <html>
 	<head>
 	  <meta charset="utf-8">

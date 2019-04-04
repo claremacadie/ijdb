@@ -1,15 +1,17 @@
 <?php
-
+//This file creates a class 'DatabaseTable' that can be used to manipulate database tables
 //This file creates functions used by other files (using include or require)
 //Variable $query has been renamed $sql (compared to the book) to reduce confusion with the function 'query'
 
 class DatabaseTable
 {
-	
+	//These variables need to be provided where creating an instance of DatabaseTable
+	//These variables can be used by all methods (functions) in the class, without be provided to the method separately
 	private $pdo;
 	private $table;
 	private $primaryKey;
 
+	//What does this do?
 	public function __construct(PDO $pdo, string $table, string $primaryKey)
 	{
 		$this->pdo = $pdo;
@@ -17,7 +19,7 @@ class DatabaseTable
 		$this->primaryKey = $primaryKey;
 	}
 
-	//This function creates an SQL query to be run on the database
+	//This function creates an SQL query to be run on a database
 	//The arguments are the database connection, sql query and parameters required by the sql query (which are set to an empty array [])
 	//The prepare and execute parts ensure that special characters (e.g. ") don't corrupt the database
 	private function query($sql, $parameters = []) {
@@ -27,6 +29,8 @@ class DatabaseTable
 	}
 		
 	//This function returns the total number of records in any database table
+	//The query it creates looks like:
+	//SELECT COUNT(*) FROM `joke`;
 	public function total() {
 		//Error $pdo and $table are not defined
 		$sql = $this->query('SELECT COUNT(*) FROM `' . $this->table . '`');
@@ -37,6 +41,8 @@ class DatabaseTable
 	}
 
 	//This function selects a record from any database table
+	//The query it creates looks like:
+	//SELECT * FROM `joke` WHERE `primaryKey` =:3);
 	public function findById($value) {
 		
 		$sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :value';
@@ -103,6 +109,8 @@ class DatabaseTable
 	}
 
 	//This function deletes a record from any database table
+	//The query it creates looks like:
+	//DELETE FROM `joke` WHERE `primaryKey` = :1;
 	public function delete($id) {
 		$parameters = [':id' => $id];
 
@@ -110,6 +118,8 @@ class DatabaseTable
 	}
 
 	//This function retrieves all records from any database table
+	//The query it creates looks like:
+	//SELECT * FROM `joke`;
 	public function findAll() {
 		$result = $this->query('SELECT * FROM `' . $this->table . '`');
 		
@@ -131,7 +141,7 @@ class DatabaseTable
 	public function save($record) {
 			try {
 				//If it is a new record, the primary key will be empty, so set it to null and insert a new record
-				//insert is defined in this DatabaseFunctions.php file
+				//insert is defined in this DatabaseTable.php file
 				if ($record[$this->primaryKey] == '') {
 					$record[$this->primaryKey] = null;
 				}
@@ -140,7 +150,7 @@ class DatabaseTable
 			}
 			catch (PDOException $error) {
 				//Otherwise, if the primary key is not empty, update the existing record
-				//update is defined in this DatabaseFunctions.php file
+				//update is defined in this DatabaseTable.php file
 				$this->update($record);
 			}
 	}

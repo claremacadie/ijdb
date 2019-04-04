@@ -1,21 +1,24 @@
 <?php
+//This files creates a class 'JokeController' with inputs of tables '$jokesTable' and 'authorsTable'
+//All of the methods (functions) in this file are then available to instances of this controller created by other files
+
 class JokeController {
-	private $authorsTable;
 	private $jokesTable;
-		
+	private $authorsTable;
+	
+	//This constructs JokeController, with the jokesTable and authorsTable 
 	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable) {
 		$this->jokesTable = $jokesTable;
 		$this->authorsTable = $authorsTable;
 	}	
 
-//Use the FindAll function (defined in DatabaseFunctions.php) to return a list of all the jokes in the database
+//Use the FindAll function (defined in DatabaseTable.php) to return a list of all the jokes in the database
 public function list() {
 	$result = $this->jokesTable->findAll();
 	
 	//Create an array ($jokes) for jokes.html.php to iterate to produce the list of jokes
 	$jokes = [];
 	foreach ($result as $joke) {
-		//This line doesn't work
 		$author = $this->authorsTable->findById($joke['authorid']);
 		
 		$jokes[] = [
@@ -33,6 +36,7 @@ public function list() {
 	//Use total (defined in DatabaseFunctions.php) to return the total number of jokes
 	$totalJokes = $this->jokesTable->total();
 	
+	//These variables are passed back to the file using JokeController
 	return [
 	'template' => 'jokes.html.php', 
 	'title' => $title, 
@@ -41,15 +45,11 @@ public function list() {
 
 }
 
-
-
-
 public function home() {
 	$title = 'Internet Joke Database';
 	
 	return ['template' => 'home.html.php', 'title' => $title];
 }
-
 
 public function delete() {
 	$this->jokesTable->delete($_POST['id']);
