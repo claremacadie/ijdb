@@ -5,7 +5,7 @@ class JokeController {
 		
 	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable) {
 		$this->jokesTable = $jokesTable;
-		$this->authorTable = $authorsTable;
+		$this->authorsTable = $authorsTable;
 	}	
 
 //Use the FindAll function (defined in DatabaseFunctions.php) to return a list of all the jokes in the database
@@ -15,6 +15,7 @@ public function list() {
 	//Create an array ($jokes) for jokes.html.php to iterate to produce the list of jokes
 	$jokes = [];
 	foreach ($result as $joke) {
+		//This line doesn't work
 		$author = $this->authorsTable->findById($joke['authorid']);
 		
 		$jokes[] = [
