@@ -28,8 +28,8 @@ class DatabaseTable
 		
 	//This function returns the total number of records in any database table
 	public function total() {
-		
-		$sql = $this->query($pdo, 'SELECT COUNT(*) FROM `' . $this->$table . '`');
+		//Error $pdo and $table are not defined
+		$sql = $this->query('SELECT COUNT(*) FROM `' . $this->table . '`');
 		
 		$row = $sql->fetch();
 		
@@ -105,8 +105,8 @@ class DatabaseTable
 	//This function deletes a record from any database table
 	public function delete($id) {
 		$parameters = [':id' => $id];
-		
-		$this->query('DELETE FROM `' . $this->table . '` WHERE `' . $this->primarykey . '` = :id', $parameters);
+
+		$this->query('DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id', $parameters);
 	}
 
 	//This function retrieves all records from any database table
