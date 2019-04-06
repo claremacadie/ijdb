@@ -21,15 +21,17 @@
 		echo $date->format('jS F Y');
 		?>)
 		
-		<!If there are actions edit and id posted (_POST or _GET) to the website, this is passed to index.php>
-		<!index.php uses these actions to load the correct template using the loadTemplate function>
-		<a href ="index.php?action=edit&id=<?=$joke['id']?>">
+		<?php //When id is posted (_POST or _GET) to the website, this is passed to index.php?>
+		<?php //Because the directory joke/edit does not exist on the server, .htaccess redirects this url to index.php?>
+		<?php //index.php uses joke/edit to load the correct template using the loadTemplate function?>
+		<a href ="/joke/edit?id=<?=$joke['id']?>">
 		Edit
 		</a>
 		
-		<!If the action delete is posted (_POST or _GET) to the website, this is passed to index.php>
-		<!index.php uses this action to load the correct template using the loadTemplate function>
-		<form action="index.php?action=delete" method="post">
+		<?php //When id is posted (_POST or _GET) to the website, this is passed to index.php?>
+		<?php //Because the directory joke/delete does not exist on the server, .htaccess redirects this url to index.php?>
+		<?php //index.php uses joke/delete to load the correct template using the loadTemplate function?>
+		<form action="/joke/delete" method="post">
 		<input type="hidden" name="id" value="<?=$joke['id']?>">
 			<input type="submit" value="Delete">
 		</form>

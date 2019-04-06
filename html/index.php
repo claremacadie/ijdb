@@ -2,6 +2,8 @@
 
 //This file is the main entry point to the website
 //This files changes what is displayed on the webpage based on what information has been posted (_POST or _GET) 
+//Be aware, an extra file not in the book is required to get everything working
+//This is a hidden file called .htaccess and ensures that unknown urls get sent to index.php
 
 //This function includes files from the templates folder
 //The file it includes depends of the $templateFileName given
@@ -35,8 +37,11 @@ try {
 	
 	//This code includes the JokeController and RegisterController with their relevant classes as inputs
 	
-	//if $route is not set, use 'joke/home'
-	$route = $_GET['route'] ?? 'joke/home';
+	//Set $route to whatever is written in the URL
+	//By taking what is written up to the first ? and removing the initial /
+	//E.g. /joke/edit?id=3 becomes joke/edit
+	//jokes.html.php and layout.html.php set the URL to be something like: /joke/edit?id=<?=$joke['id']
+	$route = ltrim(strtok($_SERVER['REQUEST_URI'], '?'), '/');
 	
 	//Use $route to ensure that the controllers only have classes as inputs that they are dependent upon
 	//if $route is lowercase, go ahead and use it
@@ -50,10 +55,10 @@ try {
 			$controller = new JokeController($jokesTable, $authorsTable);
 			$page = $controller->list();
 		
-		//otherwise, if route is equal to and of the same type as 'joke/home', include JokeController.php
+		//otherwise, if route is equal to and of the same type as '' (i.e. empty), include JokeController.php
 		//Create instance of jokeController with specific joke and author tables provided above
 		//Set $page to JokeController->home
-		} elseif ($route === 'joke/home') {
+		} elseif ($route === '') {
 			include __DIR__ . '/../classes/controllers/JokeController.php';
 			$controller = new JokeController($jokesTable, $authorsTable);
 			$page = $controller->home();
@@ -86,6 +91,8 @@ try {
 	//301 says this is a permanent rediret and redirects to the lowercase version
 	// E.g. if someones visits index.php?action=ListJOKES, they will be redirected to index.php?action=listjokes
 	//The permanent redirect is important for search engines not to include erroneous pages in their searches
+	//Once redirected to index.php, it comes back into this file, 
+	//but passes the lowercase test and so does the code block above
 	} else {
 		http_response_code(301);
 		header('location: index.php?route=' . strtolower($route));

@@ -54,8 +54,9 @@ public function home() {
 public function delete() {
 	$this->jokesTable->delete($_POST['id']);
 	
-	//Send the browser to jokes.php
-	header('location: index.php?action=list');
+	//Send the browser to /joke/list
+	//Because the directory joke/list does not exist on the server, .htaccess redirects this url to index.php
+	header('location: /joke/list');
 	
 }
 
@@ -73,8 +74,9 @@ public function edit() {
 		$title = '';
 		$output = '';
 		
-		//Send the browser to jokes.php
-		header('location: index.php?action=list');
+		//Send the browser to /joke/list
+		//Because the directory joke/list does not exist on the server, .htaccess redirects this url to index.php
+		header('location: /joke/list');
 	
 	//If nothing has yet been entered into the text box, it retrieves the joke to be edited
 	//findById is defined in DatabaseFunctions.php
