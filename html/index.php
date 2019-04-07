@@ -1,6 +1,8 @@
 <?php
 
-//This file is the main entry point to the website and uses EntryPoint.php
+//This file is the main entry point to the website and uses EntryPoint.php and IjdbRoutes.php
+//EntryPoint.php is generic code for accessing websites
+//IjdbRoute.php is speccific code for accessig the joke database
 //Be aware, an extra file not in the book is required to get everything working
 //This is a hidden file called .htaccess and ensures that unknown urls get sent to index.php
 
@@ -8,6 +10,7 @@
 try {
 //echo ('hi');
 	include __DIR__ . '/../classes/EntryPoint.php';
+	include __DIR__ . '/../classes/IjdbRoutes.php';
 	
 	//Set $route to whatever is written in the URL
 	//By taking what is written up to the first ? and removing the initial /
@@ -18,7 +21,7 @@ try {
 	//This sets up a new object called entryPoint with $route as an input
 	//The run method is defined in entryPoint
 	//run uses layout.html.php to display stuff to the webpage (using $title and $output)
-	$entryPoint = new EntryPoint($route);
+	$entryPoint = new EntryPoint($route, new IjdbRoutes());
 	$entryPoint->run();
 	
 //If $pdo (Database connection) doesn't work, this provides an error message
