@@ -2,8 +2,10 @@
 //This file contains gspecific code for accessing the joke database
 //DatabaseConnection.php sets up the connection to the database
 //DatabaseTable.php contains functions to manipulate databases, including insert record, edit record and find record
+//This file is called by including autoload.php in index.php
 //JokeController.php contains functions to manipulate the joke database
 //RegisterController.php contains functions to administer users
+//autoload.php loads class files when a class is used for the first time
 //This code includes the JokeController and RegisterController with their relevant classes as inputs
 
 class IjdbRoutes
@@ -11,7 +13,6 @@ class IjdbRoutes
 	public function callAction($route)
 	{
 		include __DIR__ . '/../includes/DatabaseConnection.php';
-		include __DIR__ . '/../classes/DatabaseTable.php';
 
 		//Create instances of DatabaseTables for the joke and author tables
 		$jokesTable = new DatabaseTable($pdo, 'joke', 'id');

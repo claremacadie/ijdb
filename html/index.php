@@ -2,15 +2,16 @@
 
 //This file is the main entry point to the website and uses EntryPoint.php and IjdbRoutes.php
 //EntryPoint.php is generic code for accessing websites
-//IjdbRoute.php is speccific code for accessig the joke database
+//IjdbRoute.php is speccific code for accessing the joke database
+//These files are called by including autoload.php
+//autoload.php loads class files when a class is used for the first time
 //Be aware, an extra file not in the book is required to get everything working
 //This is a hidden file called .htaccess and ensures that unknown urls get sent to index.php
 
 
 try {
 //echo ('hi');
-	include __DIR__ . '/../classes/EntryPoint.php';
-	include __DIR__ . '/../classes/IjdbRoutes.php';
+	include __DIR__ . '/../includes/autoload.php';
 	
 	//Set $route to whatever is written in the URL
 	//By taking what is written up to the first ? and removing the initial /
