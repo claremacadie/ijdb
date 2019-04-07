@@ -1,8 +1,18 @@
 <?php
-//This files creates a class 'JokeController' with inputs of tables '$jokesTable' and 'authorsTable'
+//This files creates a class 'Joke' with inputs of tables '$jokesTable' and 'authorsTable'
+//Joke controller is in namespace Ijdb\Controllers
 //All of the methods (functions) in this file are then available to instances of this controller created by other files
 
-class JokeController {
+
+//namespace is like a folder and gives classes unique names, in case another developed creates an EntryPoint class
+namespace Ijdb\Controllers;
+
+//Although we are in Ijdb\Controllers namespace, 
+//'use' tells this file to look in namespace \Ninja\DatabaseTable for classes it can't find in Ijdb\Controllers
+use \Ninja\DatabaseTable;
+
+
+class Joke {
 	private $jokesTable;
 	private $authorsTable;
 	
@@ -62,12 +72,16 @@ public function delete() {
 
 public function edit() {
 	//If something has been entered into the text box...
+	//This function converts DateTime objects to a string that MySQL understands
+	//DateTime has a '\' in front because we are in Ijdb/Controllers namespace
+	//and DateTime is an in-built PHP class, in the global namespace
+	//'\' tells it to start from global namespace
 	if (isset($_POST['joke'])) {
 		$joke = $_POST['joke'];
-		$joke['jokedate'] = new DateTime();
+		$joke['jokedate'] = new \DateTime();
 		$joke['authorId'] = 1;
 		
-		//save is defined in DatabaseFunctions.php
+		//save is defined in DatabaseTable.php
 		$this->jokesTable->save($joke);
 		
 		// Set these to stop PHP compile warning in error log
@@ -79,7 +93,7 @@ public function edit() {
 		header('location: /joke/list');
 	
 	//If nothing has yet been entered into the text box, it retrieves the joke to be edited
-	//findById is defined in DatabaseFunctions.php
+	//findById is defined in DatabaseTable.php
 	} else {
 		if (isset($_GET['id'])) {
 			$joke = $this->jokesTable->findById($_GET['id']);

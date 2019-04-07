@@ -11,6 +11,8 @@
 
 try {
 //echo ('hi');
+	//include calls the file
+	// '/../' tells it to go up once from the directory it is in to find 'includes'
 	include __DIR__ . '/../includes/autoload.php';
 	
 	//Set $route to whatever is written in the URL
@@ -19,10 +21,11 @@ try {
 	//jokes.html.php and layout.html.php set the URL to be something like: /joke/edit?id=<?=$joke['id']
 	$route = ltrim(strtok($_SERVER['REQUEST_URI'], '?'), '/');
 	
-	//This sets up a new object called entryPoint with $route as an input
-	//The run method is defined in entryPoint
+	//This sets up a new object called EntryPoint with $route as an input
+	//The run method is defined in EntryPoint, which is in the namespace Ninja
+	//(Similarly, IjdbRoutes is in the Ijdb namespace)
 	//run uses layout.html.php to display stuff to the webpage (using $title and $output)
-	$entryPoint = new EntryPoint($route, new IjdbRoutes());
+	$entryPoint = new \Ninja\EntryPoint($route, new \Ijdb\IjdbRoutes());
 	$entryPoint->run();
 	
 //If $pdo (Database connection) doesn't work, this provides an error message

@@ -3,6 +3,10 @@
 //This file changes what is displayed on the webpage based on $route as defined in index.php
 //It defines $title and $outut which are used by layout.html.php to display stuff to the webpage
 //$routes is an array with all the possible URLs and $route is the actual page the user is on
+
+//namespace is like a folder and gives classes unique names, in case another developed creates an EntryPoint class
+namespace Ninja;
+
 class EntryPoint
 {
 	private $route;
@@ -41,7 +45,7 @@ class EntryPoint
 		//ob_start starts a buffer that gets filled by the include file and then output to the website at the end
 		ob_start();
 
-		include __DIR__ . '/../templates/' . $templateFileName;
+		include __DIR__ . '/../../templates/' . $templateFileName;
 		
 		return ob_get_clean();
 	}
@@ -65,6 +69,6 @@ class EntryPoint
 		}
 		
 		//This file contains the layout information and uses $title and $output defined above
-		include __DIR__ . '/../templates/layout.html.php';
+		include __DIR__ . '/../../templates/layout.html.php';
 	}
 }

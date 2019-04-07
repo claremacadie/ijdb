@@ -3,6 +3,9 @@
 //This file creates functions used by other files (using include or require)
 //Variable $query has been renamed $sql (compared to the book) to reduce confusion with the function 'query'
 
+//namespace is like a folder and gives classes unique names, in case another developed creates an EntryPoint class
+namespace Ninja;
+
 class DatabaseTable
 {
 	//These variables need to be provided where creating an instance of DatabaseTable
@@ -11,8 +14,11 @@ class DatabaseTable
 	private $table;
 	private $primaryKey;
 
-	//What does this do?
-	public function __construct(PDO $pdo, string $table, string $primaryKey)
+	//__construct is used the first time a class is called and its parameters are set
+	//PDOException has a '\' in front because we are in Ninja namespace
+	//and PDOException is an in-built PHP class, in the global namespace
+	//'\' tells it to start from global namespace
+	public function __construct(\PDO $pdo, string $table, string $primaryKey)
 	{
 		$this->pdo = $pdo;
 		$this->table = $table;
@@ -127,9 +133,12 @@ class DatabaseTable
 	}
 
 	//This function converts DateTime objects to a string that MySQL understands
+	//DateTime has a '\' in front because we are in Ninja namespace
+	//and DateTime is an in-built PHP class, in the global namespace
+	//'\' tells it to start from global namespace
 	private function processDates($fields) {
 		foreach ($fields as $key => $value) {
-			if ($value instanceof DateTime) {
+			if ($value instanceof \DateTime) {
 				$fields[$key] = $value->format('Y-m-d');
 			}
 		}
@@ -148,7 +157,10 @@ class DatabaseTable
 				
 				$this->insert($record);
 			}
-			catch (PDOException $error) {
+			//PDOException has a '\' in front because we are in Ninja namespace
+			//and PDOException is an in-built PHP class, in the global namespace
+			//'\' tells it to start from global namespace
+			catch (\PDOException $error) {
 				//Otherwise, if the primary key is not empty, update the existing record
 				//update is defined in this DatabaseTable.php file
 				$this->update($record);
