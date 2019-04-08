@@ -11,7 +11,9 @@
 //namespace is like a folder and gives classes unique names, in case another developed creates an IjdbRoutes class
 namespace Ijdb;
 
-class IjdbRoutes
+//Implements the type hinting defined in Routes.php
+//This ensures the correct formats are used as inputs
+class IjdbRoutes implements \Ninja\Routes
 {	
 	public function getRoutes()
 	{
