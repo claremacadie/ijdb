@@ -13,8 +13,10 @@ class EntryPoint
 	private $method;
 	private $routes;
 	
-	//WTF
-	//Uses type hinting to ensure the inputs are of the correct format
+	//When an EntryPoint register class is created, __construct tells it that 
+	//$route is an input and it must be a string, and
+	//$method is an input and it must be a string, and
+	//$routes is an input and it must be of the type \Ninja\Routes
 	public function __construct(string $route, string $method, \Ninja\Routes $routes)
 	{
 		$this->route = $route;
@@ -67,10 +69,10 @@ class EntryPoint
 		
 		//Define $action dependent on $routes
 		$action = $routes[$this->route][$this->method]['action'];
-
+		
 		//Define $page dependent on the method and URL
 		$page = $controller->$action();
-				
+		
 		//Define $title as whatever is output by $page
 		$title = $page['title'];
 		

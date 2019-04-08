@@ -17,6 +17,10 @@ class Joke {
 	private $authorsTable;
 	
 	//This constructs JokeController, with the jokesTable and authorsTable 
+	//When a JokeController class is created, __construct tells it that 
+	//$jokesTable is an input and it must be a DatabaseTable, and
+	//$authorsTable is an input and it must be a DatabaseTable
+	
 	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable) {
 		$this->jokesTable = $jokesTable;
 		$this->authorsTable = $authorsTable;

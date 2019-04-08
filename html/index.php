@@ -26,6 +26,8 @@ try {
 	//jokes.html.php and layout.html.php set the URL to be something like: /joke/edit?id=<?=$joke['id']
 	$route = ltrim(strtok($_SERVER['REQUEST_URI'], '?'), '/');
 	
+	//echo($route);
+	
 	//This sets up a new object called EntryPoint 
 	//with inputs $route, the method (_GET or _POST) and $routes (defined by IjdbRoutes)
 	//The run method is defined in EntryPoint, which is in the namespace Ninja
