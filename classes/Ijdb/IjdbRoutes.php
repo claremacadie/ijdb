@@ -1,5 +1,5 @@
 <?php
-//This file contains gspecific code for accessing the joke database
+//This file contains specific code for accessing the joke database
 //DatabaseConnection.php sets up the connection to the database
 //DatabaseTable.php contains functions to manipulate databases, including insert record, edit record and find record
 //This file is called by including autoload.php in index.php
@@ -13,7 +13,7 @@ namespace Ijdb;
 
 class IjdbRoutes
 {	
-	public function callAction($route)
+	public function getRoutes()
 	{
 		include __DIR__ . '/../../includes/DatabaseConnection.php';
 
@@ -21,44 +21,39 @@ class IjdbRoutes
 		//The DatabaseTable class is in the Ninja namespace
 		$jokesTable = new \Ninja\DatabaseTable($pdo, 'joke', 'id');
 		$authorsTable = new \Ninja\DatabaseTable($pdo, 'author', 'id');
+
+		//Create instance on jokeController with $jokesTable and $authorsTable as inputs
+		$jokeController = new \Ijdb\Controllers\Joke($jokesTable, $authorsTable);
+		
+		//Create $routes array to enable URLs and request methods (_GET or _POST) to determine different actions
+		$routes = [
+			'joke/edit' => [
+				'POST' => [
+					'controller' => $jokeController, 
+					'action' => 'saveEdit'],
+				'GET' => [
+					'controller' => $jokeController, 
+					'action' => 'edit']],
 			
-		//if $route is equal to and of the same type as 'joke/list', include \Ijdb\Controllers\Joke.php
-		//Create instance of \Ijdb\Controllers\Joke with specific joke and author tables provided above
-		//Set $page to \Ijdb\Controllers\Joke->list
-		if ($route === 'joke/list') {
-			$controller = new \Ijdb\Controllers\Joke($jokesTable, $authorsTable);
-			$page = $controller->list();
-		
-		//otherwise, if route is equal to and of the same type as '' (i.e. empty), include \Ijdb\Controllers\Joke.php
-		//Create instance of \Ijdb\Controllers\Joke with specific joke and author tables provided above
-		//Set $page to \Ijdb\Controllers\Joke->home
-		} elseif ($route === '') {
-			$controller = new \Ijdb\Controllers\Joke($jokesTable, $authorsTable);
-			$page = $controller->home();
-		
-		//otherwise, if route is equal to and of the same type as 'joke/edit', include \Ijdb\Controllers\Joke.php
-		//Create instance of \Ijdb\Controllers\Joke with specific joke and author tables provided above
-		//Set $page to \Ijdb\Controllers\Joke->edit
-		} elseif ($route === 'joke/edit') {
-			$controller = new \Ijdb\Controllers\Joke($jokesTable, $authorsTable);
-			$page = $controller->edit();
-		
-		//otherwise, if route is equal to and of the same type as 'joke/delete', include \Ijdb\Controllers\Joke.php
-		//Create instance of \Ijdb\Controllers\Joke with specific joke and author tables provided above
-		//Set $page to \Ijdb\Controllers\Joke->delete
-		} elseif ($route === 'joke/delete') {
-			$controller = new \Ijdb\Controllers\Joke($jokesTable, $authorsTable);
-			$page = $controller->delete();
+			'joke/delete' => [
+				'POST' => [
+					'controller' => $jokeController, 
+					'action' => 'delete']],
 			
-		//otherwise, if route is equal to and of the same type as 'register', include Register.php
-		//Create instance of \Ijdb\Controllers\Joke with specific joke and author tables provided above
-		//Set $page to RegisterController->showform
-		} elseif ($route === 'register') {
-			$controller = new Register($authorsTable);
-			$page = $controller->showform();
-		}
+			'joke/list' => [
+				'GET' => [
+					'controller' => $jokeController, 
+					'action' => 'list']],
+						
+			'' => [
+				'GET' => [
+					'controller' => $jokeController, 
+					'action' => 'home']]
+		];
 		
-		//This sets the output of this method
-		return $page;
+		
+		//Set the output of this function to be $routes
+		//This array will contain the appropriate action, depending on the controller it is paired with
+		return $routes;		
 	}
 }

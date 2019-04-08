@@ -1,6 +1,6 @@
 <?php
 //This file contains generic code for accessing websites
-//This file changes what is displayed on the webpage based on $route as defined in index.php
+//This file changes what is displayed on the webpage based on $route, $method and $routes as defined in index.php
 //It defines $title and $outut which are used by layout.html.php to display stuff to the webpage
 //$routes is an array with all the possible URLs and $route is the actual page the user is on
 
@@ -10,11 +10,13 @@ namespace Ninja;
 class EntryPoint
 {
 	private $route;
+	private $method;
 	private $routes;
 	
-	public function __construct($route, $routes)
+	public function __construct($route, $method, $routes)
 	{
 		$this->route = $route;
+		$this->method = $method;
 		$this->routes = $routes;
 		$this->checkUrl();
 	}
@@ -50,12 +52,24 @@ class EntryPoint
 		return ob_get_clean();
 	}
 
+	//This method defines $title and $output dependent on $routes
+	//$routes is created by getRoutes, which is defined in IjdbRoutes
+	//$routes is basically the method (_GET or _POST) and the URL
 	public function run()
 	{
-		//Define $page as the output of callAction
-		$page = $this->routes->callAction($this->route);
+		//Define $routes as the output of getRoutes
+		$routes = $this->routes->getRoutes();
+		
+		//Define $controller dependent on $routes
+		$controller = $routes[$this->route][$this->method]['controller'];
+		
+		//Define $action dependent on $routes
+		$action = $routes[$this->route][$this->method]['action'];
 
-		//Define $title as whatever is output by the method used above
+		//Define $page dependent on the method and URL
+		$page = $controller->$action();
+				
+		//Define $title as whatever is output by $page
 		$title = $page['title'];
 		
 		//If $page has defined variables, 

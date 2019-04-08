@@ -8,6 +8,11 @@
 //Be aware, an extra file not in the book is required to get everything working
 //This is a hidden file called .htaccess and ensures that unknown urls get sent to index.php
 
+//A word about namespaces: these are used similar to file directories, 
+//they organise classes into generic and specific types
+//When namespaces are created they are referred to like this: namespace Ninja
+//When they are subsquently called either as a type hint or when creating new objects
+//they are referred to like this: \Ninja\
 
 try {
 //echo ('hi');
@@ -21,11 +26,12 @@ try {
 	//jokes.html.php and layout.html.php set the URL to be something like: /joke/edit?id=<?=$joke['id']
 	$route = ltrim(strtok($_SERVER['REQUEST_URI'], '?'), '/');
 	
-	//This sets up a new object called EntryPoint with $route as an input
+	//This sets up a new object called EntryPoint 
+	//with inputs $route, the method (_GET or _POST) and $routes (defined by IjdbRoutes)
 	//The run method is defined in EntryPoint, which is in the namespace Ninja
 	//(Similarly, IjdbRoutes is in the Ijdb namespace)
 	//run uses layout.html.php to display stuff to the webpage (using $title and $output)
-	$entryPoint = new \Ninja\EntryPoint($route, new \Ijdb\IjdbRoutes());
+	$entryPoint = new \Ninja\EntryPoint($route, $_SERVER['REQUEST_METHOD'], new \Ijdb\IjdbRoutes());
 	$entryPoint->run();
 	
 //If $pdo (Database connection) doesn't work, this provides an error message

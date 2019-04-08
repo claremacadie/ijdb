@@ -22,86 +22,90 @@ class Joke {
 		$this->authorsTable = $authorsTable;
 	}	
 
-//Use the FindAll function (defined in DatabaseTable.php) to return a list of all the jokes in the database
-public function list() {
-	$result = $this->jokesTable->findAll();
-	
-	//Create an array ($jokes) for jokes.html.php to iterate to produce the list of jokes
-	$jokes = [];
-	foreach ($result as $joke) {
-		$author = $this->authorsTable->findById($joke['authorid']);
+	//Use the FindAll function (defined in DatabaseTable.php) to return a list of all the jokes in the database
+	public function list() {
+		$result = $this->jokesTable->findAll();
 		
-		$jokes[] = [
-			'id' => $joke['id'],
-			'joketext' => $joke['joketext'],
-			'jokedate' => $joke['jokedate'],
-			'name' => $author['name'],
-			'email' => $author['email']
+		//Create an array ($jokes) for jokes.html.php to iterate to produce the list of jokes
+		$jokes = [];
+		foreach ($result as $joke) {
+			$author = $this->authorsTable->findById($joke['authorid']);
+			
+			$jokes[] = [
+				'id' => $joke['id'],
+				'joketext' => $joke['joketext'],
+				'jokedate' => $joke['jokedate'],
+				'name' => $author['name'],
+				'email' => $author['email']
+			];
+		}
+		
+		//Set variable 'title' for use in the include file
+		$title = 'Joke list';
+		
+		//Use total (defined in DatabaseFunctions.php) to return the total number of jokes
+		$totalJokes = $this->jokesTable->total();
+		
+		//These variables are passed back to the file using JokeController
+		return [
+		'template' => 'jokes.html.php', 
+		'title' => $title, 
+		'variables' => ['totalJokes' => $totalJokes, 'jokes' => $jokes]
 		];
+
 	}
 	
-	//Set variable 'title' for use in the include file
-	$title = 'Joke list';
-	
-	//Use total (defined in DatabaseFunctions.php) to return the total number of jokes
-	$totalJokes = $this->jokesTable->total();
-	
-	//These variables are passed back to the file using JokeController
-	return [
-	'template' => 'jokes.html.php', 
-	'title' => $title, 
-	'variables' => ['totalJokes' => $totalJokes, 'jokes' => $jokes]
-	];
-
-}
-
-public function home() {
-	$title = 'Internet Joke Database';
-	
-	return ['template' => 'home.html.php', 'title' => $title];
-}
-
-public function delete() {
-	$this->jokesTable->delete($_POST['id']);
-	
-	//Send the browser to /joke/list
-	//Because the directory joke/list does not exist on the server, .htaccess redirects this url to index.php
-	header('location: /joke/list');
-	
-}
-
-public function edit() {
-	//If something has been entered into the text box...
-	//This function converts DateTime objects to a string that MySQL understands
-	//DateTime has a '\' in front because we are in Ijdb/Controllers namespace
-	//and DateTime is an in-built PHP class, in the global namespace
-	//'\' tells it to start from global namespace
-	if (isset($_POST['joke'])) {
-		$joke = $_POST['joke'];
-		$joke['jokedate'] = new \DateTime();
-		$joke['authorId'] = 1;
+	//Sends the browser to the home page
+	public function home() {
+		$title = 'Internet Joke Database';
 		
-		//save is defined in DatabaseTable.php
-		$this->jokesTable->save($joke);
-		
-		// Set these to stop PHP compile warning in error log
-		$title = '';
-		$output = '';
+		return ['template' => 'home.html.php', 'title' => $title];
+	}
+
+	//Deletes joke with matching id and sends the browser to the jokes list page
+	public function delete() {
+		$this->jokesTable->delete($_POST['id']);
 		
 		//Send the browser to /joke/list
 		//Because the directory joke/list does not exist on the server, .htaccess redirects this url to index.php
 		header('location: /joke/list');
+		
+	}
 	
-	//If nothing has yet been entered into the text box, it retrieves the joke to be edited
+	//When something has been entered (_POST) into the text box...
+	//This function converts DateTime objects to a string that MySQL understands
+	//DateTime has a '\' in front because we are in Ijdb/Controllers namespace
+	//and DateTime is an in-built PHP class, in the global namespace
+	//'\' tells it to start from global namespace
+	public function saveEdit() {
+		$joke = $_POST['joke'];
+		$joke['jokedate'] = new \DateTime();
+		$joke['authorId'] = 1;
+			
+		//save is defined in DatabaseTable.php
+		$this->jokesTable->save($joke);
+			
+		// Set these to stop PHP compile warning in error log
+		$title = '';
+		$output = '';
+			
+		//Send the browser to /joke/list
+		//Because the directory joke/list does not exist on the server, .htaccess redirects this url to index.php
+		header('location: /joke/list');
+	}
+
+		
+	//When nothing has yet been entered into the text box, this function retrieves the joke to be edited
+	//It pastes the text of the joke in the form so it can be edited
 	//findById is defined in DatabaseTable.php
-	} else {
+	public function edit(){
 		if (isset($_GET['id'])) {
 			$joke = $this->jokesTable->findById($_GET['id']);
 		}
 		
 		//Set variable 'title' for use in the include file
 		$title = 'Edit joke';
-		
+			
 		return [
 		'template' => 'edit.html.php', 
 		'title' => $title,
@@ -109,7 +113,4 @@ public function edit() {
 		];
 
 	}
-}
-
-
 }
