@@ -16,6 +16,7 @@
 				<li><a href="/">Home</a></li>
 				<li><a href="/joke/list">Jokes list</a></li>
 				<li><a href="/joke/edit">Add a new joke</a></li>
+				<li><a href="/author/register">Register a new user</a></li>
 			</ul>
 		</nav>
 		
