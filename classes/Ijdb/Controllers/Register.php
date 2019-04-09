@@ -60,6 +60,12 @@ class Register
 			$errors[] = 'Email cannot be blank';
 		}	
 		
+		//This check uses an inbuilt function to check for valid email addresses
+		else if (filter_var($author['email'], FILTER_VALIDATE_EMAIL) == false) {
+			$valid = false;
+			$errors[] = 'Invalid email address';
+		}
+		
 		if (empty($author['password'])) {
 			$valid = false;
 			$errors[] = 'Password cannot be blank';
