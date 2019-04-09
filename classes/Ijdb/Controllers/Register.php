@@ -35,12 +35,49 @@ class Register
 	}
 	
 	//This function registers users and displays the successful registration page
+	//This contains validation that the fields are not left blank
+	//Validation also includes that a valid email address has been entered that is not already in the database
 	public function registerUser()
 	{	
 		$author = $_POST['author'];
 		
-		$this->authorsTable->save($author);
+		//Assume the data is valid to begin with
+		$valid = true;
+			
+		//Create an array to store a list of error messages
+		$errors = [];		
+			
+		//But if any of the fields have been left blank set $valid to false
+		//$errors[] = means each error will be added to the end of the errors array so
+		//all the error messages will be stored in $errors
+		if (empty($author['name'])) {
+			$valid = false;
+			$errors[] = 'Name cannot be blank';
+		}
 		
+		if (empty($author['email'])) {
+			$valid = false;
+			$errors[] = 'Email cannot be blank';
+		}	
+		
+		if (empty($author['password'])) {
+			$valid = false;
+			$errors[] = 'Password cannot be blank';
+		}
+		
+		//If valid is still true, no fields were blank and the data can be added
+		if ($valid == true) {
+			$this->authorsTable->save($author);
+				
 		header('Location: /author/success');
+		}
+		else {
+			//If the data is not valid, display the errors and show the form again
+			return [
+				'template' => 'register.html.php', 
+				'title' => 'Register an account',
+				'variables' => ['errors' => $errors]
+			];
+		}
 	}
 }

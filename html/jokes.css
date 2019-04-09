@@ -32,6 +32,7 @@ blockquote {display: table; margin-bottom: 1em; border-bottom: 1px solid #ccc; p
 blockquote p {display: table-cell; width: 90%; vertical-align: top;}
 blockquote form {  display: table-cell; width: 10%;}
 
+/*This sets the formatting for displaying errors e.g. if users leave boxes blank when registering*/
 .errors {padding: 1em; border: 1px solid red; background-color: lightyellow; color: red; margin-bottom: 1em; overflow: auto;}
 .errors ul {margin-left: 1em;}
 
