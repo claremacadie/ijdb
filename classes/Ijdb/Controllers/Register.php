@@ -69,14 +69,14 @@ class Register
 		if ($valid == true) {
 			$this->authorsTable->save($author);
 				
-		header('Location: /author/success');
+			header('Location: /author/success');
 		}
 		else {
 			//If the data is not valid, display the errors and show the form again
 			return [
 				'template' => 'register.html.php', 
 				'title' => 'Register an account',
-				'variables' => ['errors' => $errors]
+				'variables' => ['errors' => $errors,'author' => $author]
 			];
 		}
 	}
