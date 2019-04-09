@@ -66,6 +66,19 @@ class Register
 			$errors[] = 'Invalid email address';
 		}
 		
+		//This checks for dupicate email addresses already in the database
+		else {
+			//convert the email to lowercase
+			$author['email'] = strtolower($author['email']);
+			
+			//Search for the lowercase version of the email using method 'find' (defined in DatabaseTable.php)
+			if (count($this->authorsTable->
+				find('email', $author['email'])) > 0) {
+					$valid = false;
+					$errors[] = 'That email address is already registered';
+				}
+		}
+		
 		if (empty($author['password'])) {
 			$valid = false;
 			$errors[] = 'Password cannot be blank';

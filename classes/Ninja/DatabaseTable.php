@@ -60,6 +60,21 @@ class DatabaseTable
 		return $sql->fetch();
 	}
 
+	//This function finds all rows where any column is equal to a particular value
+	//This can be used to check for duplicate email addresses
+	public function find($column, $value) {
+		
+		$sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
+		
+		$parameters = ['value' => $value];
+		
+		$sql = $this->query($sql, $parameters);
+		
+		//fetchAll returns an array (rather than an single value like fetch) 
+		//so that more than one value can be returned
+		return $sql->fetchAll();
+	}
+
 	//This function inserts a record in any database table
 	//The query it creates looks like:
 	//INSERT INTO `joke` (`joketext`, `jokedate`, `authorId`) VALUES (:joketext, :DateTime, :authorId);
