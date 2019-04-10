@@ -13,7 +13,7 @@ class EntryPoint
 	private $method;
 	private $routes;
 	
-	//When an EntryPoint register class is created, __construct tells it that 
+	//When an EntryPoint class is created, __construct tells it that 
 	//$route is an input and it must be a string, and
 	//$method is an input and it must be a string, and
 	//$routes is an input and it must be of the type \Ninja\Routes
@@ -64,29 +64,46 @@ class EntryPoint
 		//Define $routes as the output of getRoutes
 		$routes = $this->routes->getRoutes();
 		
-		//Define $controller dependent on $routes
-		$controller = $routes[$this->route][$this->method]['controller'];
+		//Define $authentication as the output of getAuthentication
+		$authentication = $this->routes->getAuthentication();
 		
-		//Define $action dependent on $routes
-		$action = $routes[$this->route][$this->method]['action'];
+		//If login is set, and 
+		//it's set to true, and 
+		//the user is not logged in, then
+		//redirect to the login page
 		
-		//Define $page dependent on the method and URL
-		$page = $controller->$action();
+		if (isset($routes[$this->route]['login']) && 
+			($routes[$this->route]['login'] == true) &&
+			!$authentication->isLoggedIn()) {				
+				header('location: /login/error');
+			}
 		
-		//Define $title as whatever is output by $page
-		$title = $page['title'];
-		
-		//If $page has defined variables, 
-		//pass them to the loadTemplate function (defined above) along with $page['template']
-		//$output is used in layout.html.php and sets what is put in the main body of the web page
-		if (isset($page['variables'])) {
-			$output = $this->loadTemplate($page['template'], $page['variables']);
-		//Otherwise, just pass $page['template'] to loadTemplate	
-		} else {
-			$output = $this->loadTemplate($page['template']);
+		//otherwise if the user is logged in, then the action can be called
+		else {
+			//Define $controller dependent on $routes
+			$controller = $routes[$this->route][$this->method]['controller'];
+			
+			//Define $action dependent on $routes
+			$action = $routes[$this->route][$this->method]['action'];
+			
+			//Define $page dependent on the method and URL
+			$page = $controller->$action();
+			
+			//Define $title as whatever is output by $page
+			$title = $page['title'];
+			
+			//If $page has defined variables, 
+			//pass them to the loadTemplate function (defined above) along with $page['template']
+			//$output is used in layout.html.php and sets what is put in the main body of the web page
+			if (isset($page['variables'])) {
+				$output = $this->loadTemplate($page['template'], $page['variables']);
+			//Otherwise, just pass $page['template'] to loadTemplate	
+			} else {
+				$output = $this->loadTemplate($page['template']);
+			}
+			
+			//This file contains the layout information and uses $title and $output defined above
+			include __DIR__ . '/../../templates/layout.html.php';
 		}
-		
-		//This file contains the layout information and uses $title and $output defined above
-		include __DIR__ . '/../../templates/layout.html.php';
 	}
 }

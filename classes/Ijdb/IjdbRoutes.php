@@ -15,22 +15,36 @@ namespace Ijdb;
 //This ensures the correct formats are used as inputs
 class IjdbRoutes implements \Ninja\Routes
 {	
-	public function getRoutes()
+	private $authorsTable;
+	private $jokesTable;
+	private $authentication;
+	
+	public function __construct()
 	{
 		include __DIR__ . '/../../includes/DatabaseConnection.php';
 
 		//Create instances of DatabaseTables for the joke and author tables
 		//The DatabaseTable class is in the Ninja namespace
-		$jokesTable = new \Ninja\DatabaseTable($pdo, 'joke', 'id');
-		$authorsTable = new \Ninja\DatabaseTable($pdo, 'author', 'id');
+		$this->jokesTable = new \Ninja\DatabaseTable($pdo, 'joke', 'id');
+		$this->authorsTable = new \Ninja\DatabaseTable($pdo, 'author', 'id');
+		
+		//Create an instance of the Authentication class (which is in the Ninja namespace)
+		$this->authentication = new \Ninja\Authentication($this->authorsTable, 'email', 'password');		
+	}
 
+	//This creates a $routes array to enable URLs and request methods (_GET or _POST) to determine different actions
+	//It uses type hinting to ensure it is array
+	public function getRoutes(): array
+	{
 		//Create instance of jokeController with $jokesTable and $authorsTable as inputs
-		$jokeController = new \Ijdb\Controllers\Joke($jokesTable, $authorsTable);
+		$jokeController = new \Ijdb\Controllers\Joke($this->jokesTable, $this->authorsTable);
 		
-		//Create instance of authorController with $authorsTable as an inputs
-		$authorController = new \Ijdb\Controllers\Register($authorsTable);
+		//Create instance of authorController with $authorsTable as an input
+		$authorController = new \Ijdb\Controllers\Register($this->authorsTable);
 		
-		//Create $routes array to enable URLs and request methods (_GET or _POST) to determine different actions
+		//Create instance of loginController with $this->authentication as an input
+		$loginController = new \Ijdb\Controllers\Login($this->authentication);
+		
 		$routes = [
 			'joke/edit' => [
 				'POST' => [
@@ -38,12 +52,14 @@ class IjdbRoutes implements \Ninja\Routes
 					'action' => 'saveEdit'],
 				'GET' => [
 					'controller' => $jokeController, 
-					'action' => 'edit']],
+					'action' => 'edit'],
+				'login' => true],
 			
 			'joke/delete' => [
 				'POST' => [
 					'controller' => $jokeController, 
-					'action' => 'delete']],
+					'action' => 'delete'],
+				'login' => true],
 			
 			'joke/list' => [
 				'GET' => [
@@ -57,16 +73,35 @@ class IjdbRoutes implements \Ninja\Routes
 					
 			'author/register' => [
 				'GET' => [
-					'controller' => $authorController,
+					'controller' => $authorController, 
 					'action' => 'registrationForm'],
 				'POST' => [
-					'controller' => $authorController,
+					'controller' => $authorController, 
 					'action' => 'registerUser']],
-					
+									
 			'author/success' => [
 				'GET' => [
-					'controller' => $authorController,
-					'action' => 'success']]
+					'controller' => $authorController, 
+					'action' => 'success']],			
+			
+			'login' => [
+				'GET' => [
+					'controller' => $loginController,
+					'action' => 'loginForm'],
+				'POST' => [
+					'controller' => $loginController,
+					'action' => 'processLogin']],
+			
+			'login/success' => [
+				'GET' => [
+					'controller' => $loginController,
+					'action' => 'success'],
+				'login' => true],
+			
+			'login/error' => [
+				'GET' => [
+					'controller' => $loginController,
+					'action' => 'error']]
 		];
 		
 		
@@ -74,4 +109,14 @@ class IjdbRoutes implements \Ninja\Routes
 		//This array will contain the appropriate action, depending on the controller it is paired with
 		return $routes;		
 	}
+
+	//This function returns an authentication object defined by Authentication.php
+	//It uses type hinting to ensure it is a Ninja/Authentication object
+	public function getAuthentication(): \Ninja\Authentication
+	{
+		return $this->authentication;
+	}
+	
 }
+
+
