@@ -57,4 +57,14 @@ class Login
 			'title' => 'You are not logged in'
 			];
 	}
+
+	//This function removes data from the current session when a user logs output_add_rewrite_var
+	public function logout() {
+		unset($_SESSION);
+		return [
+			'template' => 'logout.html.php',
+			'title' => 'You have been logged out'];
+	}
+	
+	
 }

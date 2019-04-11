@@ -45,6 +45,10 @@ class IjdbRoutes implements \Ninja\Routes
 		//Create instance of loginController with $this->authentication as an input
 		$loginController = new \Ijdb\Controllers\Login($this->authentication);
 		
+		//These routes appear in the address bar of the browser
+		//They are used to determine which controller, 
+		//and which method ('action') within that controller is called
+		//They also use 'login' => true to ensure only specific actions are available to logged in users 
 		$routes = [
 			'joke/edit' => [
 				'POST' => [
@@ -101,8 +105,14 @@ class IjdbRoutes implements \Ninja\Routes
 			'login/error' => [
 				'GET' => [
 					'controller' => $loginController,
-					'action' => 'error']]
-		];
+					'action' => 'error']],
+					
+			'logout' => [
+				'GET' => [
+					'controller' => $loginController,
+					'action' => 'logout']]
+					
+		];	
 		
 		
 		//Set the output of this function to be $routes

@@ -101,9 +101,14 @@ class EntryPoint
 			} else {
 				$output = $this->loadTemplate($page['template']);
 			}
-			
-			//This file contains the layout information and uses $title and $output defined above
-			include __DIR__ . '/../../templates/layout.html.php';
 		}
+		
+		//This file contains the layout information and uses $title and $output defined above
+		//The input 'loggedIn' => $authentication->isLoggedIn() keeps track of whether a user is logged in
+		echo $this->loadTemplate('layout.html.php', [
+			'loggedIn' => $authentication->isLoggedIn(),
+			'output' => $output,
+			'title' => $title]);
+				
 	}
 }
