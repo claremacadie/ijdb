@@ -21,20 +21,20 @@
 		echo $date->format('jS F Y');
 		?>)
 		
-		<?php //When id is posted (_POST or _GET) to the website, this is passed to index.php?>
-		<?php //Because the directory joke/edit does not exist on the server, .htaccess redirects this url to index.php?>
-		<?php //index.php uses joke/edit to load the correct template using the loadTemplate function?>
-		<a href ="/joke/edit?id=<?=$joke['id']?>">
-		Edit
-		</a>
+		<?php//When a user is logged in, if their userId matches the authorId of a joke, the edit and delete actions are available?>
+		<?php//Otherwise, just the joke is listed?>	
+		<?php if ($userId == $joke['authorId']): ?>
+			<a href ="/joke/edit?id=<?=$joke['id']?>">
+			Edit
+			</a>
 		
-		<?php //When id is posted (_POST or _GET) to the website, this is passed to index.php?>
-		<?php //Because the directory joke/delete does not exist on the server, .htaccess redirects this url to index.php?>
-		<?php //index.php uses joke/delete to load the correct template using the loadTemplate function?>
-		<form action="/joke/delete" method="post">
-		<input type="hidden" name="id" value="<?=$joke['id']?>">
-			<input type="submit" value="Delete">
-		</form>
+			<form action="/joke/delete" method="post">
+				<input type="hidden" name="id" value="<?=$joke['id']?>">
+				<input type="submit" value="Delete">
+			</form>
+		
+		<?php endif; ?>
+		
 	</p>
 </blockquote>
 <?php endforeach; ?>

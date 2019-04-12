@@ -80,9 +80,15 @@ class EntryPoint
 		
 		//otherwise if the user is logged in, then the action can be called
 		else {
+			//echo('hi');
+			//echo($this->route);
+			//echo($this->method);
 			//Define $controller dependent on $routes
 			$controller = $routes[$this->route][$this->method]['controller'];
+			//echo('hi2');
+			//echo(print_r($controller->home()));
 			
+			//die();
 			//Define $action dependent on $routes
 			$action = $routes[$this->route][$this->method]['action'];
 			

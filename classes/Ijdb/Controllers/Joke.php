@@ -8,8 +8,9 @@
 namespace Ijdb\Controllers;
 
 //Although we are in Ijdb\Controllers namespace, 
-//'use' tells this file to look in namespace \Ninja\DatabaseTable for classes it can't find in Ijdb\Controllers
+//'use' tells this file to look in namespaces \Ninja\DatabaseTable and Authentication for classes it can't find in Ijdb\Controllers
 use \Ninja\DatabaseTable;
+use \Ninja\Authentication;
 
 
 class Joke {
@@ -19,11 +20,13 @@ class Joke {
 	//This constructs JokeController, with the jokesTable and authorsTable 
 	//When a JokeController class is created, __construct tells it that 
 	//$jokesTable is an input and it must be a DatabaseTable, and
-	//$authorsTable is an input and it must be a DatabaseTable
+	//$authorsTable is an input and it must be a DatabaseTable, and
+	//$authentication is an input and it must be an Authentication object
 	
-	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable) {
+	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable, Authentication $authentication) {
 		$this->jokesTable = $jokesTable;
 		$this->authorsTable = $authorsTable;
+		$this->authentication = $authentication;
 	}	
 
 	//Use the FindAll function (defined in DatabaseTable.php) to return a list of all the jokes in the database
@@ -40,7 +43,8 @@ class Joke {
 				'joketext' => $joke['joketext'],
 				'jokedate' => $joke['jokedate'],
 				'name' => $author['name'],
-				'email' => $author['email']
+				'email' => $author['email'],
+				'authorId' => $author['id']
 			];
 		}
 		
@@ -50,11 +54,21 @@ class Joke {
 		//Use total (defined in DatabaseFunctions.php) to return the total number of jokes
 		$totalJokes = $this->jokesTable->total();
 		
-		//These variables are passed back to the file using JokeController
+		//Get the currently logged in user
+		$author = $this->authentication->getUser();
+		
+		//These variables are output when this method is used
+		//if there is no $author['id'] (because no user is logged in), 'userId' is set to null
+		//echo($author['id']);
+		//die;
 		return [
-		'template' => 'jokes.html.php', 
-		'title' => $title, 
-		'variables' => ['totalJokes' => $totalJokes, 'jokes' => $jokes]
+			'template' => 'jokes.html.php', 
+			'title' => $title, 
+			'variables' => [
+				'totalJokes' => $totalJokes, 
+				'jokes' => $jokes, 
+				'userId' => $author['id'] ?? null
+			]
 		];
 
 	}
@@ -76,16 +90,25 @@ class Joke {
 		
 	}
 	
-	//When something has been entered (_POST) into the text box...
-	//This function converts DateTime objects to a string that MySQL understands
-	//DateTime has a '\' in front because we are in Ijdb/Controllers namespace
-	//and DateTime is an in-built PHP class, in the global namespace
-	//'\' tells it to start from global namespace
+	//This function saves changes to the joke database
 	public function saveEdit() {
+		
+		//This enables jokes to be assigned to uses
+		$author = $this->authentication->getUser();
+		
 		$joke = $_POST['joke'];
+		
+		//This converts DateTime objects to a string that MySQL understands
+		//DateTime has a '\' in front because we are in Ijdb/Controllers namespace
+		//and DateTime is an in-built PHP class, in the global namespace
+		//'\' tells it to start from global namespace
 		$joke['jokedate'] = new \DateTime();
-		$joke['authorId'] = 1;
-			
+		
+		//Set the authorid of the joke to be the id of the author that is logged in
+		$joke['authorId'] = $author['id'];
+		//echo(print_r($joke));
+		//echo(print_r($author));
+		//die();		
 		//save is defined in DatabaseTable.php
 		$this->jokesTable->save($joke);
 			
@@ -94,7 +117,6 @@ class Joke {
 		$output = '';
 			
 		//Send the browser to /joke/list
-		//Because the directory joke/list does not exist on the server, .htaccess redirects this url to index.php
 		header('location: /joke/list');
 	}
 

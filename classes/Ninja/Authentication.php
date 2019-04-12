@@ -60,6 +60,9 @@ class Authentication
 	//This function checks if a user is logged in before they carry out any restriction actions on the database
 	public function isLoggedIn()
 	{
+		//echo($_SESSION['username']);
+		//echo($_SESSION['password']);
+		//die();
 		//if there is no username stored in the session, return false
 		if (empty($_SESSION['username'])) {
 			return false;
@@ -77,5 +80,17 @@ class Authentication
 			} else {
 				return false;
 			}
+	}
+	
+	//This function checks to see if the user is logged in
+	//If logged in, it returns an array with the record representing that user
+	//[0] is used after the find method to turn the array into a single record of the user
+	public function getUser() {
+		if ($this->isLoggedin()) {
+			return $this->users->find($this->usernameColumn, strtolower($_SESSION['username']))[0];
+		}
+		else {
+			return false;
+		}
 	}
 }
