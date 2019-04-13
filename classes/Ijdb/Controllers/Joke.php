@@ -101,11 +101,16 @@ class Joke {
 		
 		//Send the browser to /joke/list
 		header('location: /joke/list');
+		
+		//This stops the current code path because this method does not return a template and title, so
+		//when it goes back to EntryPoint.php there is nothing to process in run(), which elicits an error
+		//The code path has been taken by the header command above anyhow
+		die();
 	}
 	
 	//This function saves changes to the joke database
 	public function saveEdit() {
-		
+	
 		//This sets $author to the logged in user
 		$author = $this->authentication->getUser();
 		
@@ -120,7 +125,7 @@ class Joke {
 				return;
 			}
 		}
-		
+			
 		//Set $joke to the text posted
 		$joke = $_POST['joke'];
 		
@@ -144,6 +149,11 @@ class Joke {
 			
 		//Send the browser to /joke/list
 		header('location: /joke/list');
+		
+		//This stops the current code path because this method does not return a template and title, so
+		//when it goes back to EntryPoint.php there is nothing to process in run(), which elicits an error
+		//The code path has been taken by the header command above anyhow
+		die();
 	}
 
 		

@@ -94,7 +94,13 @@ class Register
 			$this->authorsTable->save($author);
 				
 			header('Location: /author/success');
+			
+			//This stops the current code path because this branch of the method does not return a template and title, so
+			//when it goes back to EntryPoint.php there is nothing to process in run(), which elicits an error
+			//The code path has been taken by the header command above anyhow
+			die();
 		}
+		
 		else {
 			//If the data is not valid, display the errors and show the form again
 			return [

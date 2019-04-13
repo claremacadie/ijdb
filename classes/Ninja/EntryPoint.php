@@ -76,36 +76,25 @@ class EntryPoint
 			($routes[$this->route]['login'] == true) &&
 			!$authentication->isLoggedIn()) {				
 				header('location: /login/error');
-			}
+				
+				//This stops the current code path because this method does not return a template and title, so
+				//when it goes back to loadTemplate below, there is nothing to process, which elicits an error
+				//The code path has been taken by the header command above anyhow
+				die();
+		}
 		
 		//otherwise if the user is logged in, then the action can be called
 		else {
-			//echo('hi');
-			//echo($this->route);
-			//echo($this->method);
+			
 			//Define $controller dependent on $routes
 			$controller = $routes[$this->route][$this->method]['controller'];
-			//echo('hi2');
-			//echo(print_r($controller->home()));
-			
-			//die();
+					
 			//Define $action dependent on $routes
 			$action = $routes[$this->route][$this->method]['action'];
-			
-			//echo(print_r($routes));
-			//var_dump($routes[$this->route][$this->method]);
-			//echo('<br />');
-			//echo('<br />');
-			//echo($action);
-			//echo('<br />');
-			//echo('<br />');
-			//var_dump($action);
-			
+						
 			//Define $page dependent on the method and URL
-			$page = $controller->{$action}();
-			//echo(print_r($page));
-			//die();
-			
+			$page = $controller->$action();
+					
 			//Define $title as whatever is output by $page
 			$title = $page['title'];
 			

@@ -28,6 +28,12 @@ class Login
 		//If the login works with the email and password then redirect to login/success
 		if ($this->authentication->login($_POST['email'], $_POST['password'])) {
 			header('location: /login/success');
+			
+			//This stops the current code path because this branch of the method does not return a template and title, so
+			//when it goes back to EntryPoint.php there is nothing to process in run(), which elicits an error
+			//The code path has been taken by the header command above anyhow
+			die();
+		
 		}
 		//otherwise, use the login.html.php template and display an error message
 		else {
