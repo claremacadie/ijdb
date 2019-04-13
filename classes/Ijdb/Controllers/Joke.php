@@ -82,20 +82,46 @@ class Joke {
 
 	//Deletes joke with matching id and sends the browser to the jokes list page
 	public function delete() {
-		$this->jokesTable->delete($_POST['id']);
+		
+		//Set $author to the logged in user
+		$author = $this->authentication->getUser();
+		
+		//Set $joke to the joke in the databae matching the id, using findById
+		$joke = $this->jokesTable->findById($_POST['id']);
+		
+		//If the authorId of the joke does not match the author['id'] of the user
+		//return leaves this method so that the code below is not executed and the 
+		//joke is not deleted the database
+		if ($joke['authorid'] != $author['id']) {
+			return;
+		}
+		
+		//Otherwise, delete the joke from the database
+		$joke = $this->jokesTable->delete($_POST['id']);
 		
 		//Send the browser to /joke/list
-		//Because the directory joke/list does not exist on the server, .htaccess redirects this url to index.php
 		header('location: /joke/list');
-		
 	}
 	
 	//This function saves changes to the joke database
 	public function saveEdit() {
 		
-		//This enables jokes to be assigned to uses
+		//This sets $author to the logged in user
 		$author = $this->authentication->getUser();
 		
+		//If the id is set, get the joke from the database using findById
+		if (isset($_GET['id'])) {
+			$joke = $this->jokesTable->findById($_GET['id']);
+			
+			//If the authorId of the joke does not match the author['id'] of the user
+			//return leaves this method so that the code below is not executed and the 
+			//changes are not saved to the database
+			if ($joke['authorid'] != $author['id']) {
+				return;
+			}
+		}
+		
+		//Set $joke to the text posted
 		$joke = $_POST['joke'];
 		
 		//This converts DateTime objects to a string that MySQL understands
@@ -125,17 +151,24 @@ class Joke {
 	//It pastes the text of the joke in the form so it can be edited
 	//findById is defined in DatabaseTable.php
 	public function edit(){
+		
+		//Set $author to the logged in user
+		$author = $this->authentication->getUser();
+		//echo($author['id']);
 		if (isset($_GET['id'])) {
 			$joke = $this->jokesTable->findById($_GET['id']);
 		}
 		
 		//Set variable 'title' for use in the include file
 		$title = 'Edit joke';
-			
+		//echo(print_r($author['id']));
 		return [
-		'template' => 'edit.html.php', 
-		'title' => $title,
-		'variables' => ['joke' => $joke ?? null]
+			'template' => 'edit.html.php', 
+			'title' => $title,
+			'variables' => [
+				'joke' => $joke ?? null,
+				'userId' => $author['id'] ?? null
+			]	
 		];
 
 	}

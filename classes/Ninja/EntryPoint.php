@@ -92,8 +92,19 @@ class EntryPoint
 			//Define $action dependent on $routes
 			$action = $routes[$this->route][$this->method]['action'];
 			
+			//echo(print_r($routes));
+			//var_dump($routes[$this->route][$this->method]);
+			//echo('<br />');
+			//echo('<br />');
+			//echo($action);
+			//echo('<br />');
+			//echo('<br />');
+			//var_dump($action);
+			
 			//Define $page dependent on the method and URL
-			$page = $controller->$action();
+			$page = $controller->{$action}();
+			//echo(print_r($page));
+			//die();
 			
 			//Define $title as whatever is output by $page
 			$title = $page['title'];
