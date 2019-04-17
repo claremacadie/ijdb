@@ -39,8 +39,8 @@ class Authentication
 		//compares the password with the hashed (encrypted) version in the database
 		//$user[0] is necessary because $user is a 2D array (with only 1 row!) and 
 		//we need to ask for just the first (and only!) row
-		if (!empty($user) && password_verify($password, $user[0][$this->passwordColumn])) {
-		//if (!empty($user) && password_verify($password, $user[0]->{$this->passwordColumn})) {
+		//if (!empty($user) && password_verify($password, $user[0][$this->passwordColumn])) {
+		if (!empty($user) && password_verify($password, $user[0]->{$this->passwordColumn})) {
 		
 			session_regenerate_id();
 			
@@ -48,8 +48,8 @@ class Authentication
 			$_SESSION['username'] = $username;
 			
 			//Set the password of the session to the user's $password
-			$_SESSION['password'] = $user[0][$this->passwordColumn];
-			//$_SESSION['password'] = $user[0]->{$this->passwordColumn};
+			//$_SESSION['password'] = $user[0][$this->passwordColumn];
+			$_SESSION['password'] = $user[0]->{$this->passwordColumn};
 			
 			//Set the output of this method to true
 			return true;
@@ -77,17 +77,14 @@ class Authentication
 		//if $user is found in the database 
 		//and their password in the database matches (=== equal to and the same type) the password stored in the session, 
 		//return true, otherwise return false
-		if (!empty($user) && 
-			$user[0][$this->passwordColumn] == $_SESSION['password']) {
+		//if (!empty($user) && 
+			//$user[0][$this->passwordColumn] == $_SESSION['password']) {
 		//$passwordColumn = $this->passwordColumn;
-		//if (!empty($user) && $user[0]->$password === $_SESSION['password']) {
-				
-				
-				
-				return true;
-			} else {
-				return false;
-			}
+		if (!empty($user) && $user[0]->{$this->passwordColumn} === $_SESSION['password']) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	//This function checks to see if the user is logged in

@@ -115,13 +115,13 @@ class Joke {
 		$author = $this->authentication->getUser();
 
 		//Create an author object with the jokesTable as an input
-		$authorObject = new \Ijdb\Entity\Author($this->jokesTable);
+		//$authorObject = new \Ijdb\Entity\Author($this->jokesTable);
 		
 		//Set the authorOject attributes to be the same as the logged in user
-		$authorObject->id = $author['id'];
-		$authorObject->name = $author['name'];
-		$authorObject->email = $author['email'];
-		$authorObject->password = $author['password'];
+		//$authorObject->id = $author['id'];
+		//$authorObject->name = $author['name'];
+		//$authorObject->email = $author['email'];
+		//$authorObject->password = $author['password'];
 				
 		//Set $joke to the text posted
 		$joke = $_POST['joke'];
@@ -133,8 +133,9 @@ class Joke {
 		$joke['jokedate'] = new \DateTime();
 		
 		//addJoke is defined in Author.php
-		$authorObject->addJoke($joke);
-			
+		//$authorObject->addJoke($joke);
+		$author->addJoke($joke);		
+		
 		// Set these to stop PHP compile warning in error log
 		$title = '';
 		$output = '';
@@ -169,7 +170,7 @@ class Joke {
 			'title' => $title,
 			'variables' => [
 				'joke' => $joke ?? null,
-				'userId' => $author['id'] ?? null
+				'userId' => $author->id ?? null
 			]	
 		];
 

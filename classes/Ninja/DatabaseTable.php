@@ -62,8 +62,8 @@ class DatabaseTable
 		
 		$sql = $this->query($sql, $parameters);
 		
-		return $sql->fetch();
-		//return $sql->fetchObject($this->className, $this->constructorArgs);
+		//return $sql->fetch();
+		return $sql->fetchObject($this->className, $this->constructorArgs);
 	}
 
 	//This function finds all rows where any column is equal to a particular value
@@ -78,8 +78,8 @@ class DatabaseTable
 		
 		//fetchAll returns an array (rather than an single value like fetch) 
 		//so that more than one value can be returned
-		return $sql->fetchAll();
-		//return $sql->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
+		//return $sql->fetchAll();
+		return $sql->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
 	}
 
 	//This function inserts a record in any database table
@@ -151,8 +151,8 @@ class DatabaseTable
 	public function findAll() {
 		$result = $this->query('SELECT * FROM `' . $this->table . '`');
 		
-		return $result->fetchAll();
-		//return $result->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
+		//return $result->fetchAll();
+		return $result->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
 	}
 
 	//This function converts DateTime objects to a string that MySQL understands

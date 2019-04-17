@@ -26,8 +26,8 @@ class IjdbRoutes implements \Ninja\Routes
 		//Create instances of DatabaseTables for the joke and author tables
 		//The DatabaseTable class is in the Ninja namespace
 		$this->jokesTable = new \Ninja\DatabaseTable($pdo, 'joke', 'id');
-		$this->authorsTable = new \Ninja\DatabaseTable($pdo, 'author', 'id');
-		//$this->authorsTable = new \Ninja\DatabaseTable($pdo, 'author', 'id', '\Ijdb\Entity\Author', [$this->jokesTable]);
+		//$this->authorsTable = new \Ninja\DatabaseTable($pdo, 'author', 'id');
+		$this->authorsTable = new \Ninja\DatabaseTable($pdo, 'author', 'id', '\Ijdb\Entity\Author', [$this->jokesTable]);
 		
 		//Create an instance of the Authentication class (which is in the Ninja namespace)
 		$this->authentication = new \Ninja\Authentication($this->authorsTable, 'email', 'password');		
