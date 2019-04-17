@@ -36,15 +36,15 @@ class Joke {
 		//Create an array ($jokes) for jokes.html.php to iterate to produce the list of jokes
 		$jokes = [];
 		foreach ($result as $joke) {
-			$author = $this->authorsTable->findById($joke['authorid']);
+			$author = $this->authorsTable->findById($joke->authorid);
 			
 			$jokes[] = [
-				'id' => $joke['id'],
-				'joketext' => $joke['joketext'],
-				'jokedate' => $joke['jokedate'],
-				'name' => $author['name'],
-				'email' => $author['email'],
-				'authorId' => $author['id']
+				'id' => $joke->id,
+				'joketext' => $joke->joketext,
+				'jokedate' => $joke->jokedate,
+				'name' => $author->name,
+				'email' => $author->email,
+				'authorId' => $author->id
 			];
 		}
 		
@@ -67,7 +67,7 @@ class Joke {
 			'variables' => [
 				'totalJokes' => $totalJokes, 
 				'jokes' => $jokes, 
-				'userId' => $author['id'] ?? null
+				'userId' => $author->id ?? null
 			]
 		];
 
@@ -92,7 +92,7 @@ class Joke {
 		//If the authorId of the joke does not match the author['id'] of the user
 		//return leaves this method so that the code below is not executed and the 
 		//joke is not deleted the database
-		if ($joke['authorid'] != $author['id']) {
+		if ($joke->authorid != $author->id) {
 			return;
 		}
 		

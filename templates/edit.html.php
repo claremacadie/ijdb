@@ -2,11 +2,12 @@
 <?php//|| (or) if the jokeid is null, then we're posting a new joke, so anyone can see the edit form?>
 <?php//Otherwise, display a message saying they can't edit the joke?>
 <?php// echo($userId); echo('shit'); echo(print_r($joke));?>
-<?php if (($userId == $joke['authorid']) || is_null($joke['authorid'])): ?>
+
+<?php if (($userId == $joke->authorid) || is_null($joke->authorid)): ?>
 	<form action="" method="post">
-		<input type="hidden" name="joke[id]" value="<?=$joke['id'] ?? ''?>">
+		<input type="hidden" name="joke[id]" value="<?=$joke->id ?? ''?>">
 		<label for="joketext">Type your joke here: </label>
-		<textarea id="joketext" name="joke[joketext]"><?=$joke['joketext'] ?? ''?></textarea>
+		<textarea id="joketext" name="joke[joketext]"><?=$joke->joketext ?? ''?></textarea>
 		<input type="submit" name="submit" value="Save">
 	</form>
 
