@@ -13,21 +13,21 @@ class DatabaseTable
 	private $pdo;
 	private $table;
 	private $primaryKey;
-	//private $className;
-	//private $constructorArgs;
+	private $className;
+	private $constructorArgs;
 	
 	//__construct is used the first time a class is called and its parameters are set
 	//PDOException has a '\' in front because we are in Ninja namespace
 	//and PDOException is an in-built PHP class, in the global namespace
 	//'\' tells it to start from global namespace
-	public function __construct(\PDO $pdo, string $table, string $primaryKey)
-	//public function __construct(\PDO $pdo, string $table, string $primaryKey, string '\stdClass', array $constructorArgs = [])
+	//public function __construct(\PDO $pdo, string $table, string $primaryKey)
+	public function __construct(\PDO $pdo, string $table, string $primaryKey, string $className = '\stdClass', array $constructorArgs = [])
 	{
 		$this->pdo = $pdo;
 		$this->table = $table;
 		$this->primaryKey = $primaryKey;
-		//private $className = $className;
-		//private $constructorArgs = $constructorArgs;
+		$this->className = $className;
+		$this->constructorArgs = $constructorArgs;
 	}
 
 	//This function creates an SQL query to be run on a database
