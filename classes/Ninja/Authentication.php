@@ -40,6 +40,8 @@ class Authentication
 		//$user[0] is necessary because $user is a 2D array (with only 1 row!) and 
 		//we need to ask for just the first (and only!) row
 		if (!empty($user) && password_verify($password, $user[0][$this->passwordColumn])) {
+		//if (!empty($user) && password_verify($password, $user[0]->{$this->passwordColumn})) {
+		
 			session_regenerate_id();
 			
 			//Set the username of the session to $username
@@ -47,6 +49,7 @@ class Authentication
 			
 			//Set the password of the session to the user's $password
 			$_SESSION['password'] = $user[0][$this->passwordColumn];
+			//$_SESSION['password'] = $user[0]->{$this->passwordColumn};
 			
 			//Set the output of this method to true
 			return true;
@@ -76,6 +79,11 @@ class Authentication
 		//return true, otherwise return false
 		if (!empty($user) && 
 			$user[0][$this->passwordColumn] == $_SESSION['password']) {
+		//$passwordColumn = $this->passwordColumn;
+		//if (!empty($user) && $user[0]->$password === $_SESSION['password']) {
+				
+				
+				
 				return true;
 			} else {
 				return false;

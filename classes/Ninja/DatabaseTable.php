@@ -13,16 +13,21 @@ class DatabaseTable
 	private $pdo;
 	private $table;
 	private $primaryKey;
-
+	//private $className;
+	//private $constructorArgs;
+	
 	//__construct is used the first time a class is called and its parameters are set
 	//PDOException has a '\' in front because we are in Ninja namespace
 	//and PDOException is an in-built PHP class, in the global namespace
 	//'\' tells it to start from global namespace
 	public function __construct(\PDO $pdo, string $table, string $primaryKey)
+	//public function __construct(\PDO $pdo, string $table, string $primaryKey, string '\stdClass', array $constructorArgs = [])
 	{
 		$this->pdo = $pdo;
 		$this->table = $table;
 		$this->primaryKey = $primaryKey;
+		//private $className = $className;
+		//private $constructorArgs = $constructorArgs;
 	}
 
 	//This function creates an SQL query to be run on a database
@@ -58,6 +63,7 @@ class DatabaseTable
 		$sql = $this->query($sql, $parameters);
 		
 		return $sql->fetch();
+		//return $sql->fetchObject($this->className, $this->constructorArgs);
 	}
 
 	//This function finds all rows where any column is equal to a particular value
@@ -73,6 +79,7 @@ class DatabaseTable
 		//fetchAll returns an array (rather than an single value like fetch) 
 		//so that more than one value can be returned
 		return $sql->fetchAll();
+		//return $sql->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
 	}
 
 	//This function inserts a record in any database table
@@ -145,6 +152,7 @@ class DatabaseTable
 		$result = $this->query('SELECT * FROM `' . $this->table . '`');
 		
 		return $result->fetchAll();
+		//return $result->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
 	}
 
 	//This function converts DateTime objects to a string that MySQL understands
