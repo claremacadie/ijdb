@@ -113,19 +113,16 @@ class Joke {
 	
 		//This sets $author to the logged in user
 		$author = $this->authentication->getUser();
+
+		//Create an author object with the jokesTable as an input
+		$authorObject = new \Ijdb\Entity\Author($this->jokesTable);
 		
-		//If the id is set, get the joke from the database using findById
-		if (isset($_GET['id'])) {
-			$joke = $this->jokesTable->findById($_GET['id']);
-			
-			//If the authorId of the joke does not match the author['id'] of the user
-			//return leaves this method so that the code below is not executed and the 
-			//changes are not saved to the database
-			if ($joke['authorid'] != $author['id']) {
-				return;
-			}
-		}
-			
+		//Set the authorOject attributes to be the same as the logged in user
+		$authorObject->id = $author['id'];
+		$authorObject->name = $author['name'];
+		$authorObject->email = $author['email'];
+		$authorObject->password = $author['password'];
+				
 		//Set $joke to the text posted
 		$joke = $_POST['joke'];
 		
@@ -135,13 +132,8 @@ class Joke {
 		//'\' tells it to start from global namespace
 		$joke['jokedate'] = new \DateTime();
 		
-		//Set the authorid of the joke to be the id of the author that is logged in
-		$joke['authorId'] = $author['id'];
-		//echo(print_r($joke));
-		//echo(print_r($author));
-		//die();		
-		//save is defined in DatabaseTable.php
-		$this->jokesTable->save($joke);
+		//addJoke is defined in Author.php
+		$authorObject->addJoke($joke);
 			
 		// Set these to stop PHP compile warning in error log
 		$title = '';
