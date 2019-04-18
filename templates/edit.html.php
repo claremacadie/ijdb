@@ -1,9 +1,8 @@
 <?php//Only display this edit form if the userId of the logged in user matches the joke's authorId?>
 <?php//|| (or) if the jokeid is null, then we're posting a new joke, so anyone can see the edit form?>
 <?php//Otherwise, display a message saying they can't edit the joke?>
-<?php// echo($userId); echo('shit'); echo(print_r($joke));?>
 
-<?php if (($userId == $joke->authorId) || is_null($joke->authorId)): ?>
+<?php if (empty($joke->id) || $userId == $joke->authorId):?>
 	<form action="" method="post">
 		<input type="hidden" name="joke[id]" value="<?=$joke->id ?? ''?>">
 		<label for="jokeText">Type your joke here: </label>
