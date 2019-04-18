@@ -31,22 +31,7 @@ class Joke {
 
 	//Use the FindAll function (defined in DatabaseTable.php) to return a list of all the jokes in the database
 	public function list() {
-		$result = $this->jokesTable->findAll();
-		
-		//Create an array ($jokes) for jokes.html.php to iterate to produce the list of jokes
-		$jokes = [];
-		foreach ($result as $joke) {
-			$author = $this->authorsTable->findById($joke->authorid);
-			
-			$jokes[] = [
-				'id' => $joke->id,
-				'joketext' => $joke->joketext,
-				'jokedate' => $joke->jokedate,
-				'name' => $author->name,
-				'email' => $author->email,
-				'authorId' => $author->id
-			];
-		}
+		$jokes = $this->jokesTable->findAll();
 		
 		//Set variable 'title' for use in the include file
 		$title = 'Joke list';
@@ -59,8 +44,6 @@ class Joke {
 		
 		//These variables are output when this method is used
 		//if there is no $author['id'] (because no user is logged in), 'userId' is set to null
-		//echo($author['id']);
-		//die;
 		return [
 			'template' => 'jokes.html.php', 
 			'title' => $title, 
@@ -92,7 +75,7 @@ class Joke {
 		//If the authorId of the joke does not match the author['id'] of the user
 		//return leaves this method so that the code below is not executed and the 
 		//joke is not deleted the database
-		if ($joke->authorid != $author->id) {
+		if ($joke->authorId != $author->id) {
 			return;
 		}
 		
@@ -114,15 +97,6 @@ class Joke {
 		//This sets $author to the logged in user
 		$author = $this->authentication->getUser();
 
-		//Create an author object with the jokesTable as an input
-		//$authorObject = new \Ijdb\Entity\Author($this->jokesTable);
-		
-		//Set the authorOject attributes to be the same as the logged in user
-		//$authorObject->id = $author['id'];
-		//$authorObject->name = $author['name'];
-		//$authorObject->email = $author['email'];
-		//$authorObject->password = $author['password'];
-				
 		//Set $joke to the text posted
 		$joke = $_POST['joke'];
 		
@@ -130,7 +104,7 @@ class Joke {
 		//DateTime has a '\' in front because we are in Ijdb/Controllers namespace
 		//and DateTime is an in-built PHP class, in the global namespace
 		//'\' tells it to start from global namespace
-		$joke['jokedate'] = new \DateTime();
+		$joke['jokeDate'] = new \DateTime();
 		
 		//addJoke is defined in Author.php
 		//$authorObject->addJoke($joke);
@@ -157,14 +131,14 @@ class Joke {
 		
 		//Set $author to the logged in user
 		$author = $this->authentication->getUser();
-		//echo($author['id']);
+		
 		if (isset($_GET['id'])) {
 			$joke = $this->jokesTable->findById($_GET['id']);
 		}
 		
 		//Set variable 'title' for use in the include file
 		$title = 'Edit joke';
-		//echo(print_r($author['id']));
+		
 		return [
 			'template' => 'edit.html.php', 
 			'title' => $title,

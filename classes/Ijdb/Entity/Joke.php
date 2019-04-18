@@ -1,13 +1,13 @@
 <?php
-//This creates a Joke entity class and its methods are available to joke entity classes
+//This creates a Joke entity class and its methods are available to joke objects
 
 namespace Ijdb\Entity;
 
 class Joke {
 	public $id;
 	public $authorId;
-	public $jokedate;
-	public $joketext;
+	public $jokeDate;
+	public $jokeText;
 	private $authorsTable;
 	
 	public function __construct(\Ninja\DatabaseTable $authorsTable) {
