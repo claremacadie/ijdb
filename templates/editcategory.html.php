@@ -7,11 +7,12 @@
 		value="<?=$category->id ?? ''?>"
 	/>
 	
-	<label for="categoryName">Enter category name:</label>
+	<label for="categoryname">Enter category name:</label>
 	
 	<input 
 		type="text"
-		id="categoryName"
+		id="categoryname"
+		name="category[name]"
 		value="<?=$category->name ?? ''?>"
 	/>
 	
