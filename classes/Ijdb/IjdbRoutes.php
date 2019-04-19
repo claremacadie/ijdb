@@ -17,17 +17,19 @@ class IjdbRoutes implements \Ninja\Routes
 {	
 	private $authorsTable;
 	private $jokesTable;
+	private $categoriesTable;
 	private $authentication;
 	
 	public function __construct()
 	{
 		include __DIR__ . '/../../includes/DatabaseConnection.php';
 
-		//Create instances of DatabaseTables for the joke and author tables
+		//Create instances of DatabaseTables for the joke, author and joke category tables
 		//The DatabaseTable class is in the Ninja namespace
 		$this->jokesTable = new \Ninja\DatabaseTable($pdo, 'joke', 'id', '\Ijdb\Entity\Joke', [&$this->authorsTable]);
 		$this->authorsTable = new \Ninja\DatabaseTable($pdo, 'author', 'id', '\Ijdb\Entity\Author', [&$this->jokesTable]);
-		
+		$this->categoriesTable = new \Ninja\DatabaseTable($pdo, 'category', 'id');
+				
 		//Create an instance of the Authentication class (which is in the Ninja namespace)
 		$this->authentication = new \Ninja\Authentication($this->authorsTable, 'email', 'password');		
 	}
@@ -44,6 +46,9 @@ class IjdbRoutes implements \Ninja\Routes
 		
 		//Create instance of loginController with $this->authentication as an input
 		$loginController = new \Ijdb\Controllers\Login($this->authentication);
+		
+		//Create instance of categoryController with $this->categoriesTable as an input
+		$categoryController = new \Ijdb\Controllers\Category($this->categoriesTable);
 		
 		//These routes appear in the address bar of the browser
 		//They are used to determine which controller, 
@@ -110,8 +115,17 @@ class IjdbRoutes implements \Ninja\Routes
 			'logout' => [
 				'GET' => [
 					'controller' => $loginController,
-					'action' => 'logout']]
+					'action' => 'logout']],
 					
+			'category/edit' => [
+				'POST' => [
+					'controller' => $categoryController, 
+					'action' => 'saveEdit'],
+				'GET' => [
+					'controller' => $categoryController, 
+					'action' => 'edit'],
+				'login' => true]
+			
 		];	
 		
 		
