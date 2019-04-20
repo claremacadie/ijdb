@@ -46,4 +46,11 @@ class Joke {
 		}
 	}
 	
+	//This method removes all category assignments for a particular joke from the joke_category table
+	//This is used to clear all categories before adding categories back in when editing jokes
+	//(it's easier than looping through each category to see if it is checked and unchecking if needed)
+	public function clearCategories() {
+		$this->jokeCategoriesTable->deleteWhere('jokeId', $this->id);
+	}
+	
 }

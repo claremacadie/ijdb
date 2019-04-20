@@ -119,7 +119,11 @@ class Joke {
 		
 		//Create a joke entity instance to enable joke categories to be passed back to the database
 		//addJoke is defined in Author.php
+		//Use the clearCategories method in the joke entity to remove all records from the joke_category table
+		//Before using the addCategory method in the joke entity to add the many-many relationships in the joke_category table
+		//(this is easier than checking for which need to be unchecked)
 		$jokeEntity = $author->addJoke($joke);
+		$jokeEntity->clearCategories();
 		foreach ($_POST['category'] as $categoryId) {
 			$jokeEntity->addCategory($categoryId);
 		}		

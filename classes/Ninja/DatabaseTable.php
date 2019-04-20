@@ -141,7 +141,7 @@ class DatabaseTable
 		$this->query($sql, $fields);	
 	}
 
-	//This function deletes a record from any database table
+	//This function deletes a record from any database table using its primary key
 	//The query it creates looks like:
 	//DELETE FROM `joke` WHERE `primaryKey` = :1;
 	public function delete($id) {
@@ -149,7 +149,16 @@ class DatabaseTable
 
 		$this->query('DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id', $parameters);
 	}
-
+	
+	//This function deletes records from any database table, where a particular column is equal to a particular value
+	//The query it creas looks like:
+	//DELETE FROM `joke` WHERE `authorId` = :1;
+	public function deleteWhere($column, $value) {
+		$sql = 'DELETE FROM ' . $this->table . ' WHERE ' . $column . ' = :value';
+		$parameters = ['value' => $value];
+		$sql = $this->query($sql, $parameters);
+	}	
+	
 	//This function retrieves all records from any database table
 	//The query it creates looks like:
 	//SELECT * FROM `joke`;
