@@ -33,6 +33,17 @@ class Category {
 		$this->categoriesTable->save($category);
 		header('location: /category/list');
 	}	
-	
+
+	//This function lists the categories and the template enables them to be edited and deleted
+	public function list() {
+		$categories = $this->categoriesTable->findAll();
+		$title = 'Joke Categories';
+		return [
+			'template' => 'categories.html.php',
+			'title' => $title,
+			'variables' => ['categories' => $categories]
+		];
+	}
+			
 	
 }
