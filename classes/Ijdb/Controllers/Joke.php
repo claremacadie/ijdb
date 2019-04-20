@@ -16,6 +16,8 @@ use \Ninja\Authentication;
 class Joke {
 	private $jokesTable;
 	private $authorsTable;
+	private $categoriesTable;
+	private $authentication;
 	
 	//This constructs JokeController, with the jokesTable and authorsTable 
 	//When a JokeController class is created, __construct tells it that 
@@ -23,9 +25,10 @@ class Joke {
 	//$authorsTable is an input and it must be a DatabaseTable, and
 	//$authentication is an input and it must be an Authentication object
 	
-	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable, Authentication $authentication) {
+	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable, DatabaseTable $categoriesTable, Authentication $authentication) {
 		$this->jokesTable = $jokesTable;
 		$this->authorsTable = $authorsTable;
+		$this->categoriesTable = $categoriesTable;
 		$this->authentication = $authentication;
 	}	
 
@@ -131,6 +134,10 @@ class Joke {
 		
 		//Set $author to the logged in user
 		$author = $this->authentication->getUser();
+
+		//Use the findAll method (in DatabaseTable) to get a list of categories
+		//These can then be passed to the template
+		$categories = $this->categoriesTable->findAll();
 		
 		if (isset($_GET['id'])) {
 			$joke = $this->jokesTable->findById($_GET['id']);
@@ -144,7 +151,8 @@ class Joke {
 			'title' => $title,
 			'variables' => [
 				'joke' => $joke ?? null,
-				'userId' => $author->id ?? null
+				'userId' => $author->id ?? null,
+				'categories' => $categories
 			]	
 		];
 

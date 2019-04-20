@@ -38,8 +38,8 @@ class IjdbRoutes implements \Ninja\Routes
 	//It uses type hinting to ensure it is array
 	public function getRoutes(): array
 	{
-		//Create instance of jokeController with $jokesTable, $authorsTable and $authentication as inputs
-		$jokeController = new \Ijdb\Controllers\Joke($this->jokesTable, $this->authorsTable, $this->authentication);
+		//Create instance of jokeController with $jokesTable, $authorsTable, $categoriesTable and $authentication as inputs
+		$jokeController = new \Ijdb\Controllers\Joke($this->jokesTable, $this->authorsTable, $this->categoriesTable, $this->authentication);
 		
 		//Create instance of authorController with $authorsTable as an input
 		$authorController = new \Ijdb\Controllers\Register($this->authorsTable);
