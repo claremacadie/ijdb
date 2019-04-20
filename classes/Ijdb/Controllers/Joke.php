@@ -32,9 +32,16 @@ class Joke {
 		$this->authentication = $authentication;
 	}	
 
-	//Use the FindAll function (defined in DatabaseTable.php) to return a list of all the jokes in the database
+	//Use the FindAll function (defined in DatabaseTable.php) to return a list of jokes matching the category selected
+	//if not category is selected, return all the jokes in the database
 	public function list() {
-		$jokes = $this->jokesTable->findAll();
+		if (isset($_GET['category'])){
+			$category = $this->categoriesTable->findById($_GET['category']);
+			$jokes = $category->getJokes();
+		}
+		else {
+			$jokes = $this->jokesTable->findAll();
+		}
 		
 		//Set variable 'title' for use in the include file
 		$title = 'Joke list';

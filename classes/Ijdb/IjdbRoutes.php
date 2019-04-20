@@ -29,7 +29,7 @@ class IjdbRoutes implements \Ninja\Routes
 		//The DatabaseTable class is in the Ninja namespace
 		$this->jokesTable = new \Ninja\DatabaseTable($pdo, 'joke', 'id', '\Ijdb\Entity\Joke', [&$this->authorsTable, &$this->jokeCategoriesTable]);
 		$this->authorsTable = new \Ninja\DatabaseTable($pdo, 'author', 'id', '\Ijdb\Entity\Author', [&$this->jokesTable]);
-		$this->categoriesTable = new \Ninja\DatabaseTable($pdo, 'category', 'id');
+		$this->categoriesTable = new \Ninja\DatabaseTable($pdo, 'category', 'id', '\Ijdb\Entity\Category', [&$this->jokesTable, &$this->jokeCategoriesTable]);
 		
 		//Create instance of DatabaseTables for the joke_category table, 
 		//which stores the many-many relationships between jokes and categories
