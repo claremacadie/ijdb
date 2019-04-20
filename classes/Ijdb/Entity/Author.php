@@ -26,8 +26,9 @@ class Author {
 	
 	//This method adds jokes to the database using the save method (defined in DatabaseTable)
 	//It sets the authorId of the joke to be added as the id of this Author class
+	//return enables the value of the save method to be output when this method is used
 	public function addJoke($joke) {
 		$joke['authorId'] = $this->id;
-		$this->jokesTable->save($joke);
+		return $this->jokesTable->save($joke);
 	}
 }

@@ -101,7 +101,7 @@ class Joke {
 		$author = $this->authentication->getUser();
 
 		//Set $joke to the text posted
-		$joke = $_POST['joke'];
+ 		$joke = $_POST['joke'];
 		
 		//This converts DateTime objects to a string that MySQL understands
 		//DateTime has a '\' in front because we are in Ijdb/Controllers namespace
@@ -109,9 +109,12 @@ class Joke {
 		//'\' tells it to start from global namespace
 		$joke['jokeDate'] = new \DateTime();
 		
+		//Create a joke entity instance to enable joke categories to be passed back to the database
 		//addJoke is defined in Author.php
-		//$authorObject->addJoke($joke);
-		$author->addJoke($joke);		
+		$jokeEntity = $author->addJoke($joke);
+		foreach ($_POST['category'] as $categoryId) {
+			$jokeEntity->addCategory($categoryId);
+		}		
 		
 		// Set these to stop PHP compile warning in error log
 		$title = '';

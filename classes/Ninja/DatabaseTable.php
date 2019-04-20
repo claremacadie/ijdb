@@ -109,6 +109,11 @@ class DatabaseTable
 			$fields = $this->processDates($fields);
 			
 			$this->query($sql, $fields);
+			
+			//lastInsertId is a pdo method that reads the id of the last record inserted
+			//this can store the primary key that is created by the database, which
+			//can be used by save to set record the primary key on the created entity
+			return $this->pdo->lastInsertId();
 	} 
 
 	//This function updates a record in any database table
@@ -171,22 +176,45 @@ class DatabaseTable
 	//This function saves changes to any database table
 	//This may be inserting a new record or updating and existing record
 	public function save($record) {
-			try {
-				//If it is a new record, the primary key will be empty, so set it to null and insert a new record
-				//insert is defined in this DatabaseTable.php file
-				if ($record[$this->primaryKey] == '') {
-					$record[$this->primaryKey] = null;
-				}
-				
-				$this->insert($record);
+			
+		//create an entity of the class to be updated/inserted
+		//...allows specifying of an array in place of several arguments
+		$entity = new $this->className(...$this->constructorArgs);
+		
+		try {
+			//If it is a new record, the primary key will be empty, so set it to null and insert a new record
+			//insert is defined in this DatabaseTable.php file
+			if ($record[$this->primaryKey] == '') {
+				$record[$this->primaryKey] = null;
 			}
-			//PDOException has a '\' in front because we are in Ninja namespace
-			//and PDOException is an in-built PHP class, in the global namespace
-			//'\' tells it to start from global namespace
-			catch (\PDOException $error) {
-				//Otherwise, if the primary key is not empty, update the existing record
-				//update is defined in this DatabaseTable.php file
-				$this->update($record);
-			}
+			
+			//The output of the insert method is the id of the last record inserted,
+			//which is the primary key of that record
+			//This adds it to the entity
+			$insertId = $this->insert($record);
+			$entity->{$this->primaryKey} = $insertId;
+		}
+		//PDOException has a '\' in front because we are in Ninja namespace
+		//and PDOException is an in-built PHP class, in the global namespace
+		//'\' tells it to start from global namespace
+		catch (\PDOException $error) {
+			//Otherwise, if the primary key is not empty, update the existing record
+			//update is defined in this DatabaseTable.php file
+			$this->update($record);
+		}
+		
+		//Write the data sent to the database to the class, converting the array to an object
+		//Each time foreach iterates, $key is set to the column name and $value is set to the value being written to that column
+		//if (!empty) prevents vlaues already set (such as primary keys) being overwritten with null
+		foreach ($record as $key => $value) {
+			if (!empty($value)) {
+				$entity->$key = $value;	
+			}			
+		}
+		
+		//Output the entity so that we know the id of a new record, and 
+		//so that the SELECT query is not required to fetch information back from the database that has just been inserted,
+		//this improves performance as there are fewer demands on the database
+		return $entity;
 	}
 }
