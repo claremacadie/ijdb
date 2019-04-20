@@ -31,7 +31,13 @@ class Category {
 	public function saveEdit() {
 		$category = $_POST['category'];
 		$this->categoriesTable->save($category);
+		
+		//Redirect browser to category/list webpage
 		header('location: /category/list');
+		
+		//End this program flow to prevent PHP warning in error log
+		die();
+
 	}	
 
 	//This function lists the categories and the template enables them to be edited and deleted
@@ -45,5 +51,14 @@ class Category {
 		];
 	}
 			
-	
+	//This function enables categories to be deleted
+	public function delete() {
+		$this->categoriesTable->delete($_POST['id']);
+		
+		//redirects the browser to the category/list page
+		header('location: /category/list');
+		
+		//End this program flow to prevent PHP warning in error log
+		die();
+	}
 }
