@@ -34,4 +34,16 @@ class Joke {
 		
 		$this->jokeCategoriesTable->save($jokeCat);
 	}
+	
+	//This method determines whether a joke has a category assigned
+	//It loops through the categories and checks to see each one matches a given $categoryId
+	public function hasCategory($categoryId) {
+		$jokeCategories = $this->jokeCategoriesTable->find('jokeId', $this->id);
+		foreach ($jokeCategories as $jokeCategory) {
+			if ($jokeCategory->categoryId == $categoryId) {
+				return true;
+			}
+		}
+	}
+	
 }
