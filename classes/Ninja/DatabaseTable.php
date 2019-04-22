@@ -68,11 +68,21 @@ class DatabaseTable
 
 	//This function finds all rows where any column is equal to a particular value
 	//This can be used to check for duplicate email addresses
-	public function find($column, $value) {
+	//If $orderBy is set, the result will be ordered
+	//If $limit is set, only the first $limit rows will be returned (e.g. $limit = 10, only the first 10 will be returned)
+	public function find($column, $value, $orderBy = null, $limit = null) {
 		
 		$sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
 		
 		$parameters = ['value' => $value];
+		
+		if ($orderBy !=null) {
+			$sql .= ' ORDER BY ' . $orderBy;
+		}
+		
+		if ($limit !=null) {
+			$sql .= ' LIMIT ' . $limit;
+		}
 		
 		$sql = $this->query($sql, $parameters);
 		
@@ -154,7 +164,7 @@ class DatabaseTable
 	//The query it creas looks like:
 	//DELETE FROM `joke` WHERE `authorId` = :1;
 	public function deleteWhere($column, $value) {
-		$sql = 'DELETE FROM ' . $this->table . ' WHERE ' . $column . ' = :value';
+		$sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
 		$parameters = ['value' => $value];
 		$sql = $this->query($sql, $parameters);
 	}	
@@ -164,11 +174,15 @@ class DatabaseTable
 	//SELECT * FROM `joke`;
 	//If an $orderBy value is specified, the query looks like:
 	//SELECT * FROM `joke` ORDER BY date;
-	public function findAll($orderBy = null) {
-		$sql = 'SELECT * FROM ' . $this->table;
+	public function findAll($orderBy = null, $limit = null) {
+		$sql = 'SELECT * FROM `' . $this->table . '`';
 		
 		if ($orderBy !=null) {
 			$sql .= ' ORDER BY ' . $orderBy;
+		}
+		
+		if ($limit !=null) {
+			$sql .= ' LIMIT ' . $limit;
 		}
 		
 		$result = $this->query($sql);

@@ -33,14 +33,14 @@ class Joke {
 	}	
 
 	//Use the FindAll function (defined in DatabaseTable.php) to return a list of jokes matching the category selected
-	//if no category is selected, return all the jokes in the database, ordered by date descending
+	//if no category is selected, return all the jokes in the database, ordered by date descending and only the first 10
 	public function list() {
 		if (isset($_GET['category'])){
 			$category = $this->categoriesTable->findById($_GET['category']);
 			$jokes = $category->getJokes();
 		}
 		else {
-			$jokes = $this->jokesTable->findAll('jokeDate DESC');
+			$jokes = $this->jokesTable->findAll('jokeDate DESC', 10);
 		}
 		
 		//Set variable 'title' for use in the include file

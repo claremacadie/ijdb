@@ -62,9 +62,8 @@ class Category {
 		die();
 	}
 	
-	//This function gets jokes from the database and uses usort, which
-	//takes two arguments, an array to be sorted and the function that compares two values (sortJokes, defined below)
-	//WTF see page 646
+	//This function gets jokes from the database for a particular category,
+	//and uses usort and sortJokesByDate to sort them in date order
 	public function getjokes() {
 		$jokeCategories = $this->jokeCategoriesTable->find('categoryId', $this->id);
 		$jokes = [];
@@ -77,13 +76,16 @@ class Category {
 			}
 		}
 		
-		usort($jokes, [$this, 'sortJokes']);
+		//usort is an in-built php function, the inputs are the array to be sorted ($jokes), and
+		//sortJokesByDate (defined in this controller (below)), 
+		//which tells usort to compare every pair of values in $jokes by their dateTimestamp
+		usort($jokes, [$this, 'sortJokesByDate']);
 		
 		return $jokes;
 	}
 	
-	//This function sorts jokes by date
-	private function sortJokes($a, $b) {
+	//This function sorts jokes by comparing the dateStamp of two jokes
+	private function sortJokesByDate($a, $b) {
 		$aDate = new \DateTime($a->jokeDate);
 		$bDate = new \DateTime($b->jokeDate);
 		
