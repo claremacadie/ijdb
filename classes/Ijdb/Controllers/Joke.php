@@ -164,7 +164,7 @@ class Joke {
 		$title = 'Edit joke';
 		
 		return [
-			'template' => 'edit.html.php', 
+			'template' => 'editjoke.html.php', 
 			'title' => $title,
 			'variables' => [
 				'joke' => $joke ?? null,
