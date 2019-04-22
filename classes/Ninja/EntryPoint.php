@@ -82,7 +82,11 @@ class EntryPoint
 				//The code path has been taken by the header command above anyhow
 				die();
 		}
-		
+		//Check for relevant permission of logged in user
+		else if (isset($routes[$this->route]['permissions']) && !$this->routes->checkPermission($routes[$this->route]['permissions'])) {
+			header('location: /login/error');
+			die();
+		}
 		//otherwise if the user is logged in, then the action can be called
 		else {
 			

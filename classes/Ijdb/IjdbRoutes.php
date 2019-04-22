@@ -129,20 +129,40 @@ class IjdbRoutes implements \Ninja\Routes
 				'GET' => [
 					'controller' => $categoryController, 
 					'action' => 'edit'],
-				'login' => true],
+				'login' => true,
+				'permissions' => \Ijdb\Entity\Author::EDIT_CATEGORIES],
 			
 			'category/delete' => [
 				'POST' => [
 					'controller' => $categoryController, 
 					'action' => 'delete'],
-				'login' => true],
+				'login' => true,
+				'permissions' => \Ijdb\Entity\Author::REMOVE_CATEGORIES],
 				
 			'category/list' => [
 				'GET' => [
 					'controller' => $categoryController, 
 					'action' => 'list'],
-				'login' => true]
-			
+				'login' => true,
+				'permissions' => \Ijdb\Entity\Author::LIST_CATEGORIES],
+					
+			'author/permissions' => [
+				'GET' => [
+					'controller' => $authorController, 
+					'action' => 'permissions'],
+				'POST' => [
+					'controller' => $authorController, 
+					'action' => 'savePermissions'],
+				'login' => true,
+				'permissions' => \Ijdb\Entity\Author::EDIT_USER_ACCESS],
+				
+			'author/list' => [
+				'GET' => [
+					'controller' => $authorController,
+					'action' => 'list'],
+				'login' => true,
+				'permissions' => \Ijdb\Entity\Author::EDIT_USER_ACCESS]
+						
 		];	
 		
 		
@@ -156,6 +176,17 @@ class IjdbRoutes implements \Ninja\Routes
 	public function getAuthentication(): \Ninja\Authentication
 	{
 		return $this->authentication;
+	}
+	
+	//This function fetches the current logged-in user and checks if they have a specific permission
+	//Check user is defined and their permissions match the relevant permission
+	public function checkPermission($permission): bool {
+		$user = $this->authentication->getUser();
+		if ($user && $user->hasPermission($permission)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 }

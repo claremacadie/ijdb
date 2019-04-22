@@ -60,7 +60,7 @@ class Joke {
 			'variables' => [
 				'totalJokes' => $totalJokes, 
 				'jokes' => $jokes, 
-				'userId' => $author->id ?? null,
+				'user' => $author, 
 				'categories' => $this->categoriesTable->findAll()
 			]
 		];
@@ -75,6 +75,8 @@ class Joke {
 	}
 
 	//Deletes joke with matching id and sends the browser to the jokes list page
+		
+	
 	public function delete() {
 		
 		//Set $author to the logged in user
@@ -86,7 +88,7 @@ class Joke {
 		//If the authorId of the joke does not match the author['id'] of the user
 		//return leaves this method so that the code below is not executed and the 
 		//joke is not deleted the database
-		if ($joke->authorId != $author->id) {
+		if ($joke->authorId != $author->id && !$author->hasPermission(\Ijdb\Entity\Author::DELETE_JOKES)) {
 			return;
 		}
 		
@@ -166,7 +168,7 @@ class Joke {
 			'title' => $title,
 			'variables' => [
 				'joke' => $joke ?? null,
-				'userId' => $author->id ?? null,
+				'user' => $author,
 				'categories' => $categories
 			]	
 		];

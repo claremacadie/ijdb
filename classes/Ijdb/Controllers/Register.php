@@ -110,4 +110,48 @@ class Register
 			];
 		}
 	}
+	
+	//This method fetches a list of all the registered users and passes them to the template
+	public function list() {
+		$authors = $this->authorsTable->findAll();
+		return [
+			'template' => 'authorlist.html.php',
+			'title' => 'Author list',
+			'variables' => [
+				'authors' => $authors
+			]
+		];
+	}
+	
+	//This method enables the list of checkboxes for user permissions to be passed to the template
+	//ReflectionClass enables all the variables, methods and constants of a class to be read
+	//getConstants is an in-built php function for reflection classes
+	public function permissions() {
+		$author = $this->authorsTable->findById($_GET['id']);
+		$reflected = new \ReflectionClass('\Ijdb\Entity\Author');
+		$constants = $reflected->getConstants();
+		return [
+			'template' => 'permissions.html.php',
+			'title' => 'Edit Permissions',
+			'variables' => [
+				'author' => $author,
+				'permissions' => $constants
+			]
+		];
+	}
+	
+	//This saves the user's permissions in the database
+	//array_sum adds all the values from the $_POST array, 
+	//if no boxes are ticked it is set to an empty array
+	public function savePermissions() {
+		$author = [
+			'id' => $_GET['id'],
+			'permissions' => array_sum($_POST['permissions'] ?? [])
+		];
+		
+		$this->authorsTable->save($author);
+		
+		header('location: /author/list');
+		die();
+	}
 }

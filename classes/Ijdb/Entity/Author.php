@@ -14,6 +14,14 @@ class Author {
 	public $password;
 	private $jokesTable;
 	
+	//Define the constants for user permissions
+	const EDIT_JOKES = 1;
+	const DELETE_JOKES = 2;
+	const LIST_CATEGORIES = 4;
+	const EDIT_CATEGORIES = 8;
+	const REMOVE_CATEGORIES = 16;
+	const EDIT_USER_ACCESS = 32;	
+	
 	//Create a DatabaseTable object called $jokesTable
 	public function __construct(\Ninja\DatabaseTable $jokesTable) {
 		$this->jokesTable = $jokesTable;
@@ -30,5 +38,10 @@ class Author {
 	public function addJoke($joke) {
 		$joke['authorId'] = $this->id;
 		return $this->jokesTable->save($joke);
+	}
+	
+	//This method checks if a user has a specific permissions
+	public function hasPermission($permission) {
+		return $this->permissions & $permission;
 	}
 }

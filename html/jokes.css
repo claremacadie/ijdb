@@ -1,8 +1,8 @@
 /* This sets the formatting for the jokedatabase website*/
 * {margin: 0; padding: 0; }
 body {font-family: Arial, Helvetica, Sans-serif; }
-header {display: block;  background-color: #3cbc8d; padding: 20px; border-bottom: 5px solid #757575;}
-h1 {font-weight: normal; padding: 1.5em; color: white; text-shadow: 1px 1px 0px #444; width: 1000px; margin: auto;}
+header {display: block;  background-color: grey; padding: 20px; border-bottom: 5px solid #757575;}
+h1 {font-weight: normal; padding: 0em; color: white; text-shadow: 1px 1px 0px #444; width: 1000px; margin: auto;}
 
 nav {background-color: #443A5C;}
 
@@ -13,7 +13,7 @@ nav li {display: table-cell; text-align: center; padding: 1em;}
 
 main {overflow: auto; min-height: 30vh; background-color: #f7f7f7; width: 1000px; margin: auto; box-shadow: -1000px 0 0 #f7f7f7, 1000px 0 0 #f7f7f7; padding-top: 20px;}
 
-footer {padding: 1em; background-color: #FFC9A7 ; font-size: 0.8em;}
+footer {padding: 1em; background-color: lightgrey ; font-size: 0.8em;}
 
 p {margin-bottom: 1em;}
 
@@ -41,7 +41,7 @@ form p {clear: both;}
 input[type="checkbox"] {float: left; clear: left; width: auto; margin-right: 10px;}
 input[type="checkbox"] + label {clear: right;}
 
-/*THis sets the formatting for displaying the categories on the joke list page*/
+/*This sets the formatting for displaying the categories on the joke list page*/
 .jokelist {display: table;}
 .categories {display: table-cell; width: 20%; background-color: #333; padding: 1em; list-style-type: none;}
 .categories a {color: white; text-decoration: none;}

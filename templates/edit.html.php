@@ -1,8 +1,10 @@
 <?php//Only display this edit form if the userId of the logged in user matches the joke's authorId?>
-<?php//|| (or) if the jokeid is null, then we're posting a new joke, so anyone can see the edit form?>
+<?php//|| (or) if the jokeid is null, then we're posting a new joke, so anyone can see the edit form,?>
+<?php//or if the user has permission to edit jokes?>
 <?php//Otherwise, display a message saying they can't edit the joke?>
 
-<?php if (empty($joke->id) || $userId == $joke->authorId):?>
+<?php if (empty($joke->id) || $user->id == $joke->authorId || $user->hasPermission(\Ijdb\Entity\Author::EDIT_JOKES)):?>
+
 	<form 
 		action="" 
 		method="post"
@@ -16,10 +18,7 @@
 		
 		<label for="jokeText">Type your joke here: </label>
 		
-		<textarea 
-			id="jokeText" 
-			name="joke[jokeText]"><?=$joke->jokeText ?? ''?>
-		</textarea>
+		<textarea id="jokeText"	name="joke[jokeText]"><?=$joke->jokeText ?? ''?></textarea>
 	
 		<p>Select categories for this joke:</p>
 		<?php//Loop over each category?>
