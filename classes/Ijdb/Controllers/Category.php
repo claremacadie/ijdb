@@ -61,4 +61,36 @@ class Category {
 		//End this program flow to prevent PHP warning in error log
 		die();
 	}
+	
+	//This function gets jokes from the database and uses usort, which
+	//takes two arguments, an array to be sorted and the function that compares two values (sortJokes, defined below)
+	//WTF see page 646
+	public function getjokes() {
+		$jokeCategories = $this->jokeCategoriesTable->find('categoryId', $this->id);
+		$jokes = [];
+		
+		foreach ($jokeCategories as $jokeCategory) {
+			$joke = $this->jokesTable->findById($jokeCategory->jokeId);
+			
+			if ($joke) {
+				$jokes[] = $joke;
+			}
+		}
+		
+		usort($jokes, [$this, 'sortJokes']);
+		
+		return $jokes;
+	}
+	
+	//This function sorts jokes by date
+	private function sortJokes($a, $b) {
+		$aDate = new \DateTime($a->jokeDate);
+		$bDate = new \DateTime($b->jokeDate);
+		
+		if ($aDate->getTimestamp() == $bDate->getTimestamp()) {
+			return 0;
+		}
+		//if $a>$b output -1, else output 1
+		return $aDate->getTimestamp() > $bDate->getTimestamp() ? -1 : 1;
+	}
 }
