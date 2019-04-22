@@ -162,8 +162,16 @@ class DatabaseTable
 	//This function retrieves all records from any database table
 	//The query it creates looks like:
 	//SELECT * FROM `joke`;
-	public function findAll() {
-		$result = $this->query('SELECT * FROM `' . $this->table . '`');
+	//If an $orderBy value is specified, the query looks like:
+	//SELECT * FROM `joke` ORDER BY date;
+	public function findAll($orderBy = null) {
+		$sql = 'SELECT * FROM ' . $this->table;
+		
+		if ($orderBy !=null) {
+			$sql .= ' ORDER BY ' . $orderBy;
+		}
+		
+		$result = $this->query($sql);
 		
 		//return $result->fetchAll();
 		return $result->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
