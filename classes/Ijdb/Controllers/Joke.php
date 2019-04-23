@@ -65,7 +65,8 @@ class Joke {
 				'totalJokes' => $totalJokes, 
 				'jokes' => $jokes, 
 				'user' => $author, 
-				'categories' => $this->categoriesTable->findAll()
+				'categories' => $this->categoriesTable->findAll(),
+				'currentPage' => $page
 			]
 		];
 
