@@ -70,7 +70,8 @@ class DatabaseTable
 	//This can be used to check for duplicate email addresses
 	//If $orderBy is set, the result will be ordered
 	//If $limit is set, only the first $limit rows will be returned (e.g. $limit = 10, only the first 10 will be returned)
-	public function find($column, $value, $orderBy = null, $limit = null) {
+	//If $offset if set, e.g. 6 when $limit =10, then records 6 to 15 will be returned
+	public function find($column, $value, $orderBy = null, $limit = null, $offset = null) {
 		
 		$sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
 		
@@ -82,6 +83,10 @@ class DatabaseTable
 		
 		if ($limit !=null) {
 			$sql .= ' LIMIT ' . $limit;
+		}
+		
+		if ($offset !=null) {
+			$sql .= ' OFFSET ' . $offset;
 		}
 		
 		$sql = $this->query($sql, $parameters);
@@ -172,9 +177,9 @@ class DatabaseTable
 	//This function retrieves all records from any database table
 	//The query it creates looks like:
 	//SELECT * FROM `joke`;
-	//If an $orderBy value is specified, the query looks like:
-	//SELECT * FROM `joke` ORDER BY date;
-	public function findAll($orderBy = null, $limit = null) {
+	//If an $orderBy and $offset values are specified, the query looks like:
+	//SELECT * FROM `joke` ORDER BY date OFFSET 10;
+	public function findAll($orderBy = null, $limit = null, $offset = null) {
 		$sql = 'SELECT * FROM `' . $this->table . '`';
 		
 		if ($orderBy !=null) {
@@ -183,6 +188,10 @@ class DatabaseTable
 		
 		if ($limit !=null) {
 			$sql .= ' LIMIT ' . $limit;
+		}
+		
+		if ($offset !=null) {
+			$sql .= ' OFFSET ' . $offset;
 		}
 		
 		$result = $this->query($sql);

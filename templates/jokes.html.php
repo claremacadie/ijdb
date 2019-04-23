@@ -46,4 +46,18 @@
 		</blockquote>
 	<?php endforeach; ?>
 
+	Select page:
+	
+	<?php 
+		//Calculate the number of pages (ceil rounds up)
+		$numPages = ceil($totalJokes/10);
+		
+		//Display a link for each page
+		for ($i = 1; $i <= $numPages; $i++):
+	?>
+	
+	<a href="/joke/list?page=<?=$i?>"><?=$i?></a>
+	
+	<?php endfor; ?>
+	
 </div>
