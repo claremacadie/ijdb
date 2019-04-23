@@ -39,18 +39,26 @@ class DatabaseTable
 		return $sql;
 	}
 		
-	//This function returns the total number of records in any database table
+	//This function returns the total number of records in any database table, matching the criteria set
 	//The query it creates looks like:
-	//SELECT COUNT(*) FROM `joke`;
-	public function total() {
-		//Error $pdo and $table are not defined
-		$sql = $this->query('SELECT COUNT(*) FROM `' . $this->table . '`');
+	//SELECT COUNT(*) FROM `joke` WHERE `category` = Programmer jokes;
+	public function total($field = null, $value = null) {
+		$sql = 'SELECT COUNT(*) FROM `' . $this->table . '`';
+		$parameters = [];
 		
-		$row = $sql->fetch();
+		if (!empty($field)) {
+			$sql .= ' WHERE `' . $field . '` = :value';
+			$parameters = ['value' => $value];
+		}
+		
+		$query = $this->query($sql, $parameters);
+		
+		$row = $query->fetch();
 		
 		return $row[0];
 	}
-
+	
+			
 	//This function selects a record from any database table
 	//The query it creates looks like:
 	//SELECT * FROM `joke` WHERE `primaryKey` =:3);

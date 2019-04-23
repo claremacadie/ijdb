@@ -29,4 +29,10 @@ class Category {
 		}
 		return $jokes;
 	}
+
+	//This method returns the total number of jokes for a given category
+	//WTF this method seems to only output 6!
+	public function getNumJokes() {
+		return $this->jokeCategoriesTable->total('categoryId', $this->id);
+	}
 }

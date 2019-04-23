@@ -6,3 +6,22 @@
 //echo($_SESSION['username']);
 //echo($_SESSION['password']);
 //die();
+
+//debugging
+echo('value = '.$value);
+echo("<br>");
+echo('$parameters =');
+print_r($parameters);
+echo("<br>");
+echo('$sql ='.$sql);
+echo("<br>");
+echo('$query =');
+print_r($query);
+echo("<br>");
+echo('$row =');
+print_r($row);
+echo("<br>");
+echo('$row[0] =');
+echo($row[0]);
+echo("<br>");
+//die();

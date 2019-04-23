@@ -63,9 +63,10 @@ class Category {
 	}
 	
 	//This function gets jokes from the database for a particular category,
+	//using $limit and offset to select the relevant jokes for the page,
 	//and uses usort and sortJokesByDate to sort them in date order
-	public function getjokes() {
-		$jokeCategories = $this->jokeCategoriesTable->find('categoryId', $this->id);
+	public function getjokes($limit = null, $offset = null) {
+		$jokeCategories = $this->jokeCategoriesTable->find('categoryId', $this->id, null, $limit, $offset);
 		$jokes = [];
 		
 		foreach ($jokeCategories as $jokeCategory) {

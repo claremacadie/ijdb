@@ -41,23 +41,23 @@ class Joke {
 		
 		if (isset($_GET['category'])){
 			$category = $this->categoriesTable->findById($_GET['category']);
-			$jokes = $category->getJokes();
+			$jokes = $category->getJokes(10, $offset);
+			$totalJokes = $category->getNumJokes();
 		}
 		else {
 			$jokes = $this->jokesTable->findAll('jokeDate DESC', 10, $offset);
+			$totalJokes = $this->jokesTable->total();		
+			
 		}
 		
 		//Set variable 'title' for use in the include file
 		$title = 'Joke list';
-		
-		//Use total (defined in DatabaseFunctions.php) to return the total number of jokes
-		$totalJokes = $this->jokesTable->total();
-		
+				
 		//Get the currently logged in user
 		$author = $this->authentication->getUser();
 		
 		//These variables are output when this method is used
-		//if there is no $author['id'] (because no user is logged in), 'userId' is set to null
+		//if there is no category it is set to null
 		return [
 			'template' => 'jokes.html.php', 
 			'title' => $title, 
@@ -66,7 +66,8 @@ class Joke {
 				'jokes' => $jokes, 
 				'user' => $author, 
 				'categories' => $this->categoriesTable->findAll(),
-				'currentPage' => $page
+				'currentPage' => $page,
+				'category' => $_GET['category'] ?? null
 			]
 		];
 
