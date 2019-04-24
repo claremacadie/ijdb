@@ -16,14 +16,14 @@
 	<?php //Outputs a list of jokes with an email link for the author, date (formatted to 1st april 2019), edit link and delete button?>
 	<?php foreach ($jokes as $joke): ?>
 		<blockquote>
-			<?=htmlspecialchars($joke->jokeText, ENT_QUOTES, 'UTF-8')?>
+			<?=(new \Ninja\Markdown($joke->jokeText))->toHtml()?>
 			(by <a href="mailto:<?php echo htmlspecialchars($joke->getAuthor()->email, ENT_QUOTES, 'UTF-8'); ?>">
 			<?=htmlspecialchars($joke->getAuthor()->name, ENT_QUOTES, 'UTF-8'); ?>
 			</a> 
 			on <?php $date = new DateTime($joke->jokeDate); echo $date->format('jS F Y'); ?>)
 			
 			<?php //When a user is logged in, if their userId matches the authorId of a joke, ?>
-			<?php //Or if ther user has permissions to edit or delete jokes, ?>
+			<?php //Or if the user has permissions to edit or delete jokes, ?>
 			<?php //the edit and delete actions are available?>
 			<?php //Otherwise, just the joke is listed?>	
 			<?php if ($user): ?>
@@ -58,11 +58,24 @@
 		if ($i == $currentPage):
 	?>
 			<a class="currentpage" href="/joke/list?page=<?=$i?><?=!empty($categoryId) ? '&category=' . $categoryId : '' ?>"><?=$i?></a>
-
+			
 		<?php else: ?>
 			<a href="/joke/list?page=<?=$i?><?=!empty($categoryId) ? '&category=' . $categoryId : '' ?>"><?=$i?></a>
-
+			
 		<?php endif; ?>
 	<?php endfor; ?>	
-	
+		
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+

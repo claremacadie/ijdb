@@ -18,8 +18,8 @@ class Category {
 	}
 	
 	//This method returns the first 10 jokes matching a particular category id
-	public function getJokes() {
-		$jokeCategories = $this->jokeCategoriesTable->find('categoryId', $this->id, null, 10);
+	public function getJokes($limit = null, $offset = null) {
+		$jokeCategories = $this->jokeCategoriesTable->find('categoryId', $this->id, null, $limit, $offset);
 		$jokes = [];
 		foreach ($jokeCategories as $jokeCategory) {
 			$joke = $this->jokesTable->findById($jokeCategory->jokeId);

@@ -67,7 +67,7 @@ class Joke {
 				'user' => $author, 
 				'categories' => $this->categoriesTable->findAll(),
 				'currentPage' => $page,
-				'category' => $_GET['category'] ?? null
+				'categoryId' => $_GET['category'] ?? null
 			]
 		];
 
