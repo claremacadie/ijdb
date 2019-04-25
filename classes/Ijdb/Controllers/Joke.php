@@ -17,6 +17,7 @@ class Joke {
 	private $jokesTable;
 	private $authorsTable;
 	private $categoriesTable;
+	private $jokeCategoriesTable;
 	private $authentication;
 	
 	//This constructs JokeController, with the jokesTable and authorsTable 
@@ -25,10 +26,11 @@ class Joke {
 	//$authorsTable is an input and it must be a DatabaseTable, and
 	//$authentication is an input and it must be an Authentication object
 	
-	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable, DatabaseTable $categoriesTable, Authentication $authentication) {
+	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable, DatabaseTable $categoriesTable, DatabaseTable $jokeCategoriesTable, Authentication $authentication) {
 		$this->jokesTable = $jokesTable;
 		$this->authorsTable = $authorsTable;
 		$this->categoriesTable = $categoriesTable;
+		$this->jokeCategoriesTable = $jokeCategoriesTable;
 		$this->authentication = $authentication;
 	}	
 
@@ -88,7 +90,7 @@ class Joke {
 		//Set $author to the logged in user
 		$author = $this->authentication->getUser();
 		
-		//Set $joke to the joke in the databae matching the id, using findById
+		//Set $joke to the joke in the database matching the id, using findById
 		$joke = $this->jokesTable->findById($_POST['id']);
 		
 		//If the authorId of the joke does not match the author['id'] of the user
@@ -98,8 +100,9 @@ class Joke {
 			return;
 		}
 		
-		//Otherwise, delete the joke from the database
-		$joke = $this->jokesTable->delete($_POST['id']);
+		//Otherwise, delete the joke from the database, from the joke table and the joke_category table
+		$this->jokesTable->delete($_POST['id']);
+		$this->jokeCategoriesTable->deleteWhere('jokeId', $_POST['id']);
 		
 		//Send the browser to /joke/list
 		header('location: /joke/list');
