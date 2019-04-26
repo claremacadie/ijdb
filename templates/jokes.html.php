@@ -11,8 +11,12 @@
 <?php //Outputs the total number of jokes?>
 
 <div class="jokes">
-	<p><?=$totalJokes?> jokes have been submitted to the Internet Joke Database.</p>
-
+	<?php if (empty($categoryId)): ?>
+		<p><?=$totalJokes?> jokes in total have been submitted to the Internet Joke Database.</p>
+	<?php else: ?>
+		<p><?=$totalJokes?> jokes in the <?=$category->name?> category have been submitted to the Internet Joke Database.</p>
+	<?php endif; ?>
+	
 	<?php //Outputs a list of jokes with an email link for the author, date (formatted to 1st april 2019), edit link and delete button?>
 	<?php foreach ($jokes as $joke): ?>
 		<blockquote>
