@@ -3,6 +3,7 @@
 <?php //Loop through the categories and create a list with links for each one?>
 <div class="jokelist">
 	<ul class="categories">
+		<li><a href="/joke/list">All jokes</a></li>
 		<?php foreach ($categories as $category): ?>
 			<li><a href="/joke/list?category=<?=$category->id?>"><?=$category->name?></a></li>
 		<?php endforeach; ?>
