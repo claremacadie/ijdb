@@ -154,4 +154,15 @@ class Register
 		header('location: /author/list');
 		die();
 	}
+	
+	
+	//This sets the template and title when there is an error with users accessing pages they do not have permission to access
+	public function error()
+	{
+		return [ 
+			'template' => 'permissionserror.html.php', 
+			'title' => 'You do not have permission'
+			];
+	}
+
 }

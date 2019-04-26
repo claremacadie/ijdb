@@ -84,7 +84,7 @@ class EntryPoint
 		}
 		//Check for relevant permission of logged in user
 		else if (isset($routes[$this->route]['permissions']) && !$this->routes->checkPermission($routes[$this->route]['permissions'])) {
-			header('location: /login/error');
+			header('location: /permissions/error');
 			die();
 		}
 		//otherwise if the user is logged in, then the action can be called
