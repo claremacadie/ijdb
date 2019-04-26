@@ -58,7 +58,8 @@ class IjdbRoutes implements \Ninja\Routes
 		//These routes appear in the address bar of the browser
 		//They are used to determine which controller, 
 		//and which method ('action') within that controller is called
-		//They also use 'login' => true to ensure only specific actions are available to logged in users 
+		//They also use 'login' => true to ensure only specific actions are available to logged in users,
+		//and 'permissions' to ensure only specific actions are available to users with appropriate permissions.		
 		$routes = [
 			'joke/edit' => [
 				'POST' => [

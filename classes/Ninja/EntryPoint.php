@@ -70,7 +70,7 @@ class EntryPoint
 		//If login is set, and 
 		//it's set to true, and 
 		//the user is not logged in, then
-		//redirect to the login page
+		//redirect to the login error page
 		
 		if (isset($routes[$this->route]['login']) && 
 			($routes[$this->route]['login'] == true) &&
@@ -111,6 +111,10 @@ class EntryPoint
 			} else {
 				$output = $this->loadTemplate($page['template']);
 			}
+			
+			//Get the currently logged in user to enable the layout template to check permission for seeing particular actions
+			$author = $authentication->getUser();
+			
 		}
 		
 		//This file contains the layout information and uses $title and $output defined above
@@ -118,7 +122,8 @@ class EntryPoint
 		echo $this->loadTemplate('layout.html.php', [
 			'loggedIn' => $authentication->isLoggedIn(),
 			'output' => $output,
-			'title' => $title]);
+			'title' => $title,
+			'user' => $author]);
 				
 	}
 }
