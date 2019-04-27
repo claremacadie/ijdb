@@ -48,7 +48,8 @@ class Joke {
 		}
 		else {
 			$jokes = $this->jokesTable->findAll('jokeDate DESC', 10, $offset);
-			$totalJokes = $this->jokesTable->total();		
+			$totalJokes = $this->jokesTable->total();
+			$category = null;
 			
 		}
 		
@@ -57,7 +58,7 @@ class Joke {
 				
 		//Get the currently logged in user
 		$user = $this->authentication->getUser();
-		
+				
 		//These variables are output when this method is used
 		//if there is no category it is set to null
 		return [
@@ -69,7 +70,7 @@ class Joke {
 				'user' => $user, 
 				'categories' => $this->categoriesTable->findAll(),
 				'currentPage' => $page,
-				'categoryId' => $_GET['category'] ?? null
+				'currentCategory' => $category 
 			]
 		];
 

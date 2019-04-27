@@ -12,10 +12,10 @@
 <?php //Outputs the total number of jokes?>
 
 <div class="jokes">
-	<?php if (empty($categoryId)): ?>
+	<?php if (empty($currentCategory)): ?>
 		<p><?=$totalJokes?> jokes in total have been submitted to the Internet Joke Database.</p>
 	<?php else: ?>
-		<p><?=$totalJokes?> jokes in the <?=$category->name?> category have been submitted to the Internet Joke Database.</p>
+		<p><?=$totalJokes?> jokes in the <?=$currentCategory->name?> category have been submitted to the Internet Joke Database.</p>
 	<?php endif; ?>
 	
 	<?php //Outputs a list of jokes with an email link for the author, date (formatted to 1st april 2019), edit link and delete button?>
@@ -62,10 +62,10 @@
 	for ($i = 1; $i <= $numPages; $i++):
 		if ($i == $currentPage):
 	?>
-			<a class="currentpage" href="/joke/list?page=<?=$i?><?=!empty($categoryId) ? '&category=' . $categoryId : '' ?>"><?=$i?></a>
+			<a class="currentpage" href="/joke/list?page=<?=$i?><?=!empty($currentCategory) ? '&category=' . $currentCategory->id : '' ?>"><?=$i?></a>
 			
 		<?php else: ?>
-			<a href="/joke/list?page=<?=$i?><?=!empty($categoryId) ? '&category=' . $categoryId : '' ?>"><?=$i?></a>
+			<a href="/joke/list?page=<?=$i?><?=!empty($currentCategory) ? '&category=' . $currentCategory->id : '' ?>"><?=$i?></a>
 			
 		<?php endif; ?>
 	<?php endfor; ?>	
