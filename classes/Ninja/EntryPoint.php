@@ -113,17 +113,18 @@ class EntryPoint
 			}
 			
 			//Get the currently logged in user to enable the layout template to check permission for seeing particular actions
-			$author = $authentication->getUser();
+			$user = $authentication->getUser();
 			
 		}
 		
 		//This file contains the layout information and uses $title and $output defined above
 		//The input 'loggedIn' => $authentication->isLoggedIn() keeps track of whether a user is logged in
+		//echo means these outputs are sent to the browser
 		echo $this->loadTemplate('layout.html.php', [
 			'loggedIn' => $authentication->isLoggedIn(),
 			'output' => $output,
 			'title' => $title,
-			'user' => $author]);
+			'user' => $user]);
 				
 	}
 }
