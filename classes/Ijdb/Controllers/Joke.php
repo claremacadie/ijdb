@@ -56,7 +56,7 @@ class Joke {
 		$title = 'Joke list';
 				
 		//Get the currently logged in user
-		$author = $this->authentication->getUser();
+		$user = $this->authentication->getUser();
 		
 		//These variables are output when this method is used
 		//if there is no category it is set to null
@@ -66,7 +66,7 @@ class Joke {
 			'variables' => [
 				'totalJokes' => $totalJokes, 
 				'jokes' => $jokes, 
-				'user' => $author, 
+				'user' => $user, 
 				'categories' => $this->categoriesTable->findAll(),
 				'currentPage' => $page,
 				'categoryId' => $_GET['category'] ?? null
