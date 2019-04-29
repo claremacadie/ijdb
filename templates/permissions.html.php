@@ -8,7 +8,7 @@
 		<input 
 			name="permissions[]"
 			type="checkbox"
-			value="?<=$value?>"
+			value="<?=$value?>"
 			<?php if ($author->hasPermission($value)): echo 'checked';?> 
 			<?php endif;?>
 		/>
