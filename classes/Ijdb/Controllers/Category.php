@@ -40,7 +40,7 @@ class Category {
 
 	}	
 
-	//This function lists the categories and the template enables them to be edited and deleted
+	//This method lists the categories and the template enables them to be edited and deleted
 	public function list() {
 		$categories = $this->categoriesTable->findAll();
 		$title = 'Joke Categories';
@@ -51,7 +51,7 @@ class Category {
 		];
 	}
 			
-	//This function enables categories to be deleted
+	//This method enables categories to be deleted
 	public function delete() {
 		$this->categoriesTable->delete($_POST['id']);
 		
@@ -62,7 +62,7 @@ class Category {
 		die();
 	}
 	
-	//This function gets jokes from the database for a particular category,
+	//This method returns jokes from the database for a particular category,
 	//using $limit and offset to select the relevant jokes for the page,
 	//and uses usort and sortJokesByDate to sort them in date order
 	public function getjokes($limit = null, $offset = null) {
@@ -85,7 +85,7 @@ class Category {
 		return $jokes;
 	}
 	
-	//This function sorts jokes by comparing the dateStamp of two jokes
+	//This method sorts jokes by comparing the dateStamp of two jokes
 	private function sortJokesByDate($a, $b) {
 		$aDate = new \DateTime($a->jokeDate);
 		$bDate = new \DateTime($b->jokeDate);

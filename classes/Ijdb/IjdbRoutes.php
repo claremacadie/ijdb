@@ -2,31 +2,24 @@
 //This file contains specific code for accessing the joke database
 //DatabaseConnection.php sets up the connection to the database
 //DatabaseTable.php contains functions to manipulate databases, including insert record, edit record and find record
-//This file is called by including autoload.php in index.php
-//\Ijdb\Controllers\Joke.php contains functions to manipulate the joke database
-//RegisterController.php contains functions to administer users
-//autoload.php loads class files when a class is used for the first time
-//This code includes the \Ijdb\Controllers\Joke and RegisterController with their relevant classes as inputs
+//Authentication contains functions for users logging into the website
 
-//namespace is like a folder and gives classes unique names, in case another developed creates an IjdbRoutes class
+//namespace is like a folder and gives classes unique names, in case another developer creates an IjdbRoutes class
 namespace Ijdb;
 
 //Implements the type hinting defined in Routes.php
 //This ensures the correct formats are used as inputs
-class IjdbRoutes implements \Ninja\Routes
-{	
+class IjdbRoutes implements \Ninja\Routes {	
 	private $authorsTable;
 	private $jokesTable;
 	private $categoriesTable;
 	private $jokeCategoriesTable;
 	private $authentication;
 	
-	public function __construct()
-	{
+	public function __construct() {
 		include __DIR__ . '/../../includes/DatabaseConnection.php';
 
 		//Create instances of DatabaseTables for the joke, author and joke category tables
-		//The DatabaseTable class is in the Ninja namespace
 		$this->jokesTable = new \Ninja\DatabaseTable($pdo, 'joke', 'id', '\Ijdb\Entity\Joke', [&$this->authorsTable, &$this->jokeCategoriesTable]);
 		$this->authorsTable = new \Ninja\DatabaseTable($pdo, 'author', 'id', '\Ijdb\Entity\Author', [&$this->jokesTable]);
 		$this->categoriesTable = new \Ninja\DatabaseTable($pdo, 'category', 'id', '\Ijdb\Entity\Category', [&$this->jokesTable, &$this->jokeCategoriesTable]);
@@ -35,29 +28,21 @@ class IjdbRoutes implements \Ninja\Routes
 		//which stores the many-many relationships between jokes and categories
 		$this->jokeCategoriesTable = new \Ninja\DatabaseTable($pdo, 'joke_category', 'categoryId');	
 			
-		//Create an instance of the Authentication class (which is in the Ninja namespace)
+		//Create an instance of the Authentication class
 		$this->authentication = new \Ninja\Authentication($this->authorsTable, 'email', 'password');		
 	}
 
-	//This creates a $routes array to enable URLs and request methods (_GET or _POST) to determine different actions
+	//This method creates $routes to enable URLs and request methods (_GET or _POST) to determine which method of which controller will be run
 	//It uses type hinting to ensure it is array
-	public function getRoutes(): array
-	{
-		//Create instance of jokeController with $jokesTable, $authorsTable, $categoriesTable and $authentication as inputs
+	public function getRoutes(): array {
+		//Create instance of controllers
 		$jokeController = new \Ijdb\Controllers\Joke($this->jokesTable, $this->authorsTable, $this->categoriesTable, $this->jokeCategoriesTable, $this->authentication);
-		
-		//Create instance of authorController with $authorsTable as an input
 		$authorController = new \Ijdb\Controllers\Register($this->authorsTable);
-		
-		//Create instance of loginController with $this->authentication as an input
 		$loginController = new \Ijdb\Controllers\Login($this->authentication);
-		
-		//Create instance of categoryController with $this->categoriesTable as an input
 		$categoryController = new \Ijdb\Controllers\Category($this->categoriesTable);
 		
 		//These routes appear in the address bar of the browser
-		//They are used to determine which controller, 
-		//and which method ('action') within that controller is called
+		//They are used to determine which controller and which method ('action') within that controller is called
 		//They also use 'login' => true to ensure only specific actions are available to logged in users,
 		//and 'permissions' to ensure only specific actions are available to users with appropriate permissions.		
 		$routes = [
@@ -170,20 +155,18 @@ class IjdbRoutes implements \Ninja\Routes
 					'action' => 'error']]
 		];	
 		
-		
 		//Set the output of this function to be $routes
 		//This array will contain the appropriate action, depending on the controller it is paired with
 		return $routes;		
 	}
 
-	//This function returns an authentication object defined by Authentication.php
+	//This method returns an authentication object defined by Authentication.php
 	//It uses type hinting to ensure it is a Ninja/Authentication object
-	public function getAuthentication(): \Ninja\Authentication
-	{
+	public function getAuthentication(): \Ninja\Authentication {
 		return $this->authentication;
 	}
 	
-	//This function fetches the current logged-in user and checks if they have a specific permission
+	//This method fetches the current logged-in user and checks if they have a specific permission
 	//Check user is defined and their permissions match the relevant permission
 	public function checkPermission($permission): bool {
 		$user = $this->authentication->getUser();
@@ -193,7 +176,4 @@ class IjdbRoutes implements \Ninja\Routes
 			return false;
 		}
 	}
-	
 }
-
-

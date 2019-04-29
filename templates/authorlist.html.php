@@ -1,4 +1,4 @@
-<?php//Template for the author list?>
+<?php //Template for the author list?>
 
 <h2>User List</h2>
 

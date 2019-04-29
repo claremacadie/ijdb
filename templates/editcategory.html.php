@@ -1,4 +1,4 @@
-<?php//This creates the form for adding and editing categories of jokes?>
+<?php //This creates the form for adding and editing categories of jokes?>
 
 <form action="" method="post">
 	<input 

@@ -18,7 +18,7 @@
 		<p><?=$totalJokes?> jokes in the <?=$currentCategory->name?> category have been submitted to the Internet Joke Database.</p>
 	<?php endif; ?>
 	
-	<?php //Outputs a list of jokes with an email link for the author, date (formatted to 1st april 2019), edit link and delete button?>
+	<?php //Output a list of jokes with an email link for the author, date (formatted to 1st april 2019), edit link and delete button?>
 	<?php foreach ($jokes as $joke): ?>
 		<blockquote>
 			<?=(new \Ninja\Markdown($joke->jokeText))->toHtml()?>
@@ -53,12 +53,11 @@
 
 	Select page:
 	
-	<?php 
-	//Calculate the number of pages (ceil rounds up)
+	<?php // Calculate the number of pages (ceil rounds up)
 	$numPages = ceil($totalJokes/10);
 	
-	//Display a link for each page
-	//This uses the shorthand if to append &category=$categoryId to the link if it is set (p657)
+	// Display a link for each page
+	// This uses the shorthand if to append &category=$categoryId to the link if it is set (p657)
 	for ($i = 1; $i <= $numPages; $i++):
 		if ($i == $currentPage):
 	?>

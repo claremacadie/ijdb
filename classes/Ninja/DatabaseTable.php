@@ -3,13 +3,12 @@
 //This file creates functions used by other files (using include or require)
 //Variable $query has been renamed $sql (compared to the book) to reduce confusion with the function 'query'
 
-//namespace is like a folder and gives classes unique names, in case another developed creates an EntryPoint class
+//namespace is like a folder and gives classes unique names, in case another developer creates an EntryPoint class
 namespace Ninja;
 
-class DatabaseTable
-{
+class DatabaseTable {
 	//These variables need to be provided where creating an instance of DatabaseTable
-	//These variables can be used by all methods (functions) in the class, without be provided to the method separately
+	//These variables can be used by all methods (functions) in the class, without being provided to the method separately
 	private $pdo;
 	private $table;
 	private $primaryKey;
@@ -21,8 +20,7 @@ class DatabaseTable
 	//and PDOException is an in-built PHP class, in the global namespace
 	//'\' tells it to start from global namespace
 	//public function __construct(\PDO $pdo, string $table, string $primaryKey)
-	public function __construct(\PDO $pdo, string $table, string $primaryKey, string $className = '\stdClass', array $constructorArgs = [])
-	{
+	public function __construct(\PDO $pdo, string $table, string $primaryKey, string $className = '\stdClass', array $constructorArgs = []) {
 		$this->pdo = $pdo;
 		$this->table = $table;
 		$this->primaryKey = $primaryKey;
@@ -30,8 +28,8 @@ class DatabaseTable
 		$this->constructorArgs = $constructorArgs;
 	}
 
-	//This function creates an SQL query to be run on a database
-	//The arguments are the database connection, sql query and parameters required by the sql query (which are set to an empty array [])
+	//This method creates an SQL query to be run on a database
+	//The arguments are the sql query and parameters required by the sql query (which are set to an empty array [])
 	//The prepare and execute parts ensure that special characters (e.g. ") don't corrupt the database
 	private function query($sql, $parameters = []) {
 		$sql = $this->pdo->prepare($sql);
@@ -39,7 +37,7 @@ class DatabaseTable
 		return $sql;
 	}
 		
-	//This function returns the total number of records in any database table, matching the criteria set
+	//This method returns the total number of records in any database table, matching the criteria set
 	//The query it creates looks like:
 	//SELECT COUNT(*) FROM `joke` WHERE `category` = Programmer jokes;
 	public function total($field = null, $value = null) {
@@ -57,9 +55,8 @@ class DatabaseTable
 		
 		return $row[0];
 	}
-	
-			
-	//This function selects a record from any database table
+				
+	//This method selects a record from any database table
 	//The query it creates looks like:
 	//SELECT * FROM `joke` WHERE `primaryKey` =:3);
 	public function findById($value) {
@@ -70,11 +67,10 @@ class DatabaseTable
 		
 		$sql = $this->query($sql, $parameters);
 		
-		//return $sql->fetch();
 		return $sql->fetchObject($this->className, $this->constructorArgs);
 	}
 
-	//This function finds all rows where any column is equal to a particular value
+	//This method finds all rows where any column is equal to a particular value
 	//This can be used to check for duplicate email addresses
 	//If $orderBy is set, the result will be ordered
 	//If $limit is set, only the first $limit rows will be returned (e.g. $limit = 10, only the first 10 will be returned)
@@ -105,7 +101,7 @@ class DatabaseTable
 		return $sql->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
 	}
 
-	//This function inserts a record in any database table
+	//This method inserts a record in any database table
 	//The query it creates looks like:
 	//INSERT INTO `joke` (`joketext`, `jokedate`, `authorId`) VALUES (:joketext, :DateTime, :authorId);
 	private function insert($fields) {
@@ -139,7 +135,7 @@ class DatabaseTable
 			return $this->pdo->lastInsertId();
 	} 
 
-	//This function updates a record in any database table
+	//This method updates a record in any database table
 	//The query it creates looks like:
 	//UPDATE `joke` SET `joketext` = :joketext, `jokedate` = :DateTime, `authorId` = :authorId) WHERE `primaryKey` = :1;
 	private function update($fields) {
@@ -164,7 +160,7 @@ class DatabaseTable
 		$this->query($sql, $fields);	
 	}
 
-	//This function deletes a record from any database table using its primary key
+	//This emthod deletes a record from any database table using its primary key
 	//The query it creates looks like:
 	//DELETE FROM `joke` WHERE `primaryKey` = :1;
 	public function delete($id) {
@@ -173,7 +169,7 @@ class DatabaseTable
 		$this->query('DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id', $parameters);
 	}
 	
-	//This function deletes records from any database table, where a particular column is equal to a particular value
+	//This method deletes records from any database table, where a particular column is equal to a particular value
 	//The query it creas looks like:
 	//DELETE FROM `joke` WHERE `authorId` = :1;
 	public function deleteWhere($column, $value) {
@@ -182,10 +178,8 @@ class DatabaseTable
 		$sql = $this->query($sql, $parameters);
 	}	
 	
-	//This function retrieves all records from any database table
+	//This method retrieves all records from any database table
 	//The query it creates looks like:
-	//SELECT * FROM `joke`;
-	//If an $orderBy and $offset values are specified, the query looks like:
 	//SELECT * FROM `joke` ORDER BY date OFFSET 10;
 	public function findAll($orderBy = null, $limit = null, $offset = null) {
 		$sql = 'SELECT * FROM `' . $this->table . '`';
@@ -208,7 +202,7 @@ class DatabaseTable
 		return $result->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
 	}
 
-	//This function converts DateTime objects to a string that MySQL understands
+	//This method converts DateTime objects to a string that MySQL understands
 	//DateTime has a '\' in front because we are in Ninja namespace
 	//and DateTime is an in-built PHP class, in the global namespace
 	//'\' tells it to start from global namespace
@@ -221,7 +215,7 @@ class DatabaseTable
 		return $fields;
 	}
 
-	//This function saves changes to any database table
+	//This method saves changes to any database table
 	//This may be inserting a new record or updating and existing record
 	public function save($record) {
 			

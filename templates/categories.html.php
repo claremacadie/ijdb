@@ -1,4 +1,4 @@
-<?php//This produces the HTML code to provide a list of categories that can be edited and deleted?>
+<?php //This produces the HTML code to provide a list of categories that can be edited and deleted?>
 
 <h2>Categories</h2>
 

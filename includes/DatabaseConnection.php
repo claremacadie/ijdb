@@ -1,6 +1,5 @@
-<!Sets up a connection to the database>
-
 <?php
+// Sets up a connection to the database>
 
 $pdo = new PDO('mysql:host=localhost;dbname=ijdb;
 charset=utf8', 'ijdbuser', 'ijdb2019%^&');

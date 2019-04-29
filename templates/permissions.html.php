@@ -1,4 +1,4 @@
-<?php//This file produces the html code for a page to edit a user's permissions ?>
+<?php //This file produces the html code for a page to edit a user's permissions ?>
 
 <h2>Edit <?=$author->name?>'s Permissions</h2>
 

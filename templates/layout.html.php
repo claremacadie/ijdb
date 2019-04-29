@@ -1,6 +1,6 @@
-<?php//doctype html?>
-<?php//This files sets the layout for the jokedatabase website using the jokes.css file?>
-<?php//Make sure jokes.css is in the same directory as index.php?>
+<?php //doctype html?>
+<?php //This files sets the layout for the jokedatabase website using the jokes.css file?>
+<?php //Make sure jokes.css is in the same directory as index.php?>
 <html>
 	<head>
 	  <meta charset="utf-8">
@@ -17,8 +17,8 @@
 				<li><a href="/joke/list">Jokes list</a></li>
 				<li><a href="/joke/edit">Add a new joke</a></li>
 					
-				<?php// This displays a logout option when a user is logged in and and login option when they are not logged in?>
-				<?php// Administer categories and users is only shown if logged in user has permission to edit these?>
+				<?php //This displays a logout option when a user is logged in and and login option when they are not logged in?>
+				<?php //Administer categories and users is only shown if logged in user has permission to edit these?>
 				<?php if ($loggedIn): ?>
 					
 					<?php if ($user->hasPermission(\Ijdb\Entity\Author::EDIT_CATEGORIES)): ?>

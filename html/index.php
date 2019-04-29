@@ -15,21 +15,16 @@
 //they are referred to like this: \Ninja\
 
 try {
-//echo ('hi');
 	//include calls the file
 	// '/../' tells it to go up once from the directory it is in to find 'includes'
 	include __DIR__ . '/../includes/autoload.php';
 	
 	//Set $route to whatever is written in the URL
-	//By taking what is written up to the first ? and removing the initial /
 	//E.g. /joke/edit?id=3 becomes joke/edit
-	//jokes.html.php and layout.html.php set the URL to be something like: /joke/edit?id=<?=$joke['id']
 	$route = ltrim(strtok($_SERVER['REQUEST_URI'], '?'), '/');
-	
-	//echo($route);
-	
+		
 	//This sets up a new object called EntryPoint 
-	//with inputs $route, the method (_GET or _POST) and $routes (defined by IjdbRoutes)
+	//with inputs $route, $method (_GET or _POST) and $routes (defined by IjdbRoutes)
 	//The run method is defined in EntryPoint, which is in the namespace Ninja
 	//(Similarly, IjdbRoutes is in the Ijdb namespace)
 	//run uses layout.html.php to display stuff to the webpage (using $title and $output)

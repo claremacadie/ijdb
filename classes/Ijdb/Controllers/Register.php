@@ -9,36 +9,30 @@ namespace Ijdb\Controllers;
 //'use' tells this file to look in namespace \Ninja\DatabaseTable for classes it can't find in Ijdb\Controllers
 use \Ninja\DatabaseTable;
 
-//Create Register class
-class Register
-{
-	//Declare $authorsTable as a variable for the class
+//Create Register class with $authorsTable as an input
+class Register {
 	private $authorsTable;
 	
 	//When a register class is created, __construct tells it that 
 	//$authorsTable is an input and it must be a DatabaseTable
-	public function __construct(DatabaseTable $authorsTable)
-	{
+	public function __construct(DatabaseTable $authorsTable) {
 		$this->authorsTable= $authorsTable;
 	}
 	
-	//This function creates a registration form using register.html.php
-	public function registrationForm()
-	{
+	//This method creates a registration form using register.html.php
+	public function registrationForm() {
 		return ['template' => 'register.html.php', 'title' => 'Register an account'];
 	}
 	
-	//This function displays the registration successful page using registersuccess.html.php
-	public function success()
-	{
+	//This method displays the registration successful page using registersuccess.html.php
+	public function success() {
 		return ['template' => 'registersuccess.html.php', 'title' => 'Registration Successful'];
 	}
 	
-	//This function registers users and displays the successful registration page
+	//This method registers users and displays the successful registration page
 	//This contains validation that the fields are not left blank
 	//Validation also includes that a valid email address has been entered that is not already in the database
-	public function registerUser()
-	{	
+	public function registerUser() {	
 		$author = $_POST['author'];
 		
 		//Assume the data is valid to begin with
@@ -72,11 +66,10 @@ class Register
 			$author['email'] = strtolower($author['email']);
 			
 			//Search for the lowercase version of the email using method 'find' (defined in DatabaseTable.php)
-			if (count($this->authorsTable->
-				find('email', $author['email'])) > 0) {
-					$valid = false;
-					$errors[] = 'That email address is already registered';
-				}
+			if (count($this->authorsTable->find('email', $author['email'])) > 0) {
+				$valid = false;
+				$errors[] = 'That email address is already registered';
+			}
 		}
 		
 		if (empty($author['password'])) {
@@ -140,7 +133,7 @@ class Register
 		];
 	}
 	
-	//This saves the user's permissions in the database
+	//This method saves the user's permissions in the database
 	//array_sum adds all the values from the $_POST array, 
 	//if no boxes are ticked it is set to an empty array
 	public function savePermissions() {
@@ -155,14 +148,11 @@ class Register
 		die();
 	}
 	
-	
-	//This sets the template and title when there is an error with users accessing pages they do not have permission to access
-	public function error()
-	{
+	//This method sets the template and title when there is an error with users accessing pages they do not have permission to access
+	public function error() {
 		return [ 
 			'template' => 'permissionserror.html.php', 
 			'title' => 'You do not have permission'
 			];
 	}
-
 }

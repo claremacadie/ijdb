@@ -1,4 +1,4 @@
-<?php//This file is displayed when users log out?>
+<?php //This file is displayed when users log out?>
 
 <h2>Logged out</h2>
 

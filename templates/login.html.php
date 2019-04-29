@@ -1,7 +1,6 @@
-<?php//This file creates the webpage for logging in_array?>
+<?php //This file creates the webpage for logging in?>
 
-<?php
-//This displays an error message in case logging in is not successful
+<?php //This displays an error message in case logging in is not successful
 if (isset($error)) {
 	echo '<div class="errors">' . $error . '</div>';
 }
