@@ -125,6 +125,19 @@ class DatabaseTable {
 		return $query->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
 	}
 
+	//This method converts DateTime objects to a string that MySQL understands
+	//DateTime has a '\' in front because we are in Ninja namespace
+	//and DateTime is an in-built PHP class, in the global namespace
+	//'\' tells it to start from global namespace
+	private function processDates($fields) {
+		foreach ($fields as $key => $value) {
+			if ($value instanceof \DateTime) {
+				$fields[$key] = $value->format('Y-m-d');
+			}
+		}
+		return $fields;
+	}
+
 	//This method inserts a record in any database table
 	//The query it creates looks like:
 	//INSERT INTO `joke` (`joketext`, `jokedate`, `authorId`) VALUES (:joketext, :DateTime, :authorId);
@@ -184,37 +197,6 @@ class DatabaseTable {
 		$this->query($sql, $fields);	
 	}
 
-	//This emthod deletes a record from any database table using its primary key
-	//The query it creates looks like:
-	//DELETE FROM `joke` WHERE `primaryKey` = :1;
-	public function delete($id) {
-		$parameters = [':id' => $id];
-
-		$this->query('DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id', $parameters);
-	}
-	
-	//This method deletes records from any database table, where a particular column is equal to a particular value
-	//The query it creas looks like:
-	//DELETE FROM `joke` WHERE `authorId` = :1;
-	public function deleteWhere($column, $value) {
-		$sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
-		$parameters = ['value' => $value];
-		$this->query($sql, $parameters);
-	}	
-	
-	//This method converts DateTime objects to a string that MySQL understands
-	//DateTime has a '\' in front because we are in Ninja namespace
-	//and DateTime is an in-built PHP class, in the global namespace
-	//'\' tells it to start from global namespace
-	private function processDates($fields) {
-		foreach ($fields as $key => $value) {
-			if ($value instanceof \DateTime) {
-				$fields[$key] = $value->format('Y-m-d');
-			}
-		}
-		return $fields;
-	}
-
 	//This method saves changes to any database table
 	//This may be inserting a new record or updating and existing record
 	public function save($record) {
@@ -258,5 +240,23 @@ class DatabaseTable {
 		//so that the SELECT query is not required to fetch information back from the database that has just been inserted,
 		//this improves performance as there are fewer demands on the database
 		return $entity;
+	}
+	
+	//This emthod deletes a record from any database table using its primary key
+	//The query it creates looks like:
+	//DELETE FROM `joke` WHERE `primaryKey` = :1;
+	public function delete($id) {
+		$parameters = [':id' => $id];
+
+		$this->query('DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id', $parameters);
+	}
+	
+	//This method deletes records from any database table, where a particular column is equal to a particular value
+	//The query it creas looks like:
+	//DELETE FROM `joke` WHERE `authorId` = :1;
+	public function deleteWhere($column, $value) {
+		$sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
+		$parameters = ['value' => $value];
+		$this->query($sql, $parameters);
 	}
 }
