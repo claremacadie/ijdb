@@ -175,7 +175,7 @@ class DatabaseTable {
 	public function deleteWhere($column, $value) {
 		$sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
 		$parameters = ['value' => $value];
-		$sql = $this->query($sql, $parameters);
+		$this->query($sql, $parameters);
 	}	
 	
 	//This method retrieves all records from any database table
