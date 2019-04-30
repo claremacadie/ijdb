@@ -101,6 +101,30 @@ class DatabaseTable {
 		return $query->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
 	}
 
+	//This method retrieves all records from any database table
+	//The query it creates looks like:
+	//SELECT * FROM `joke` ORDER BY date OFFSET 10;
+	public function findAll($orderBy = null, $limit = null, $offset = null) {
+		$sql = 'SELECT * FROM `' . $this->table . '`';
+		
+		if ($orderBy !=null) {
+			$sql .= ' ORDER BY ' . $orderBy;
+		}
+		
+		if ($limit !=null) {
+			$sql .= ' LIMIT ' . $limit;
+		}
+		
+		if ($offset !=null) {
+			$sql .= ' OFFSET ' . $offset;
+		}
+		
+		$query = $this->query($sql);
+		
+		//return $result->fetchAll();
+		return $query->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
+	}
+
 	//This method inserts a record in any database table
 	//The query it creates looks like:
 	//INSERT INTO `joke` (`joketext`, `jokedate`, `authorId`) VALUES (:joketext, :DateTime, :authorId);
@@ -178,30 +202,6 @@ class DatabaseTable {
 		$this->query($sql, $parameters);
 	}	
 	
-	//This method retrieves all records from any database table
-	//The query it creates looks like:
-	//SELECT * FROM `joke` ORDER BY date OFFSET 10;
-	public function findAll($orderBy = null, $limit = null, $offset = null) {
-		$sql = 'SELECT * FROM `' . $this->table . '`';
-		
-		if ($orderBy !=null) {
-			$sql .= ' ORDER BY ' . $orderBy;
-		}
-		
-		if ($limit !=null) {
-			$sql .= ' LIMIT ' . $limit;
-		}
-		
-		if ($offset !=null) {
-			$sql .= ' OFFSET ' . $offset;
-		}
-		
-		$query = $this->query($sql);
-		
-		//return $result->fetchAll();
-		return $query->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
-	}
-
 	//This method converts DateTime objects to a string that MySQL understands
 	//DateTime has a '\' in front because we are in Ninja namespace
 	//and DateTime is an in-built PHP class, in the global namespace
