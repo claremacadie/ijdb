@@ -242,13 +242,13 @@ class DatabaseTable {
 		return $entity;
 	}
 	
-	//This emthod deletes a record from any database table using its primary key
+	//This method deletes a record from any database table using its primary key
 	//The query it creates looks like:
 	//DELETE FROM `joke` WHERE `primaryKey` = :1;
 	public function delete($id) {
-		$parameters = [':id' => $id];
-
-		$this->query('DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id', $parameters);
+		$sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey  . '` = :id';
+		$parameters = ['id' => $id];
+		$this->query($sql, $parameters);
 	}
 	
 	//This method deletes records from any database table, where a particular column is equal to a particular value
