@@ -14,6 +14,7 @@ class DatabaseTable {
 	private $primaryKey;
 	private $className;
 	private $constructorArgs;
+	private $isMissingFrom;
 	
 	//__construct is used the first time a class is called and its parameters are set
 	//PDOException has a '\' in front because we are in Ninja namespace
@@ -26,6 +27,67 @@ class DatabaseTable {
 		$this->primaryKey = $primaryKey;
 		$this->className = $className;
 		$this->constructorArgs = $constructorArgs;
+		$this->isMissingFrom = [];
+	}
+
+	// This method modifies the database table class so that SELECT queries run on
+	// the table will only pick rows from this table where there is no counterpart
+	// row on some other look-up table
+	// Can be called multiple times to add multiple lookups, in which case the SELECT
+	// query will be limited to rows that are in none of the missing from tables
+	// If this method is never called then no missing from tables are set and SELECT
+	// queries simply look at this database table in isolation
+	//
+	// Parameters:
+	// $table      The other table in the database from which entries on this table 
+	//             should be missing
+	// $tableCol   The column on the other table that holds the same info as the current
+	//             table. This is the column you join on to link the two tables
+	// $sourceCol  The column in this table that holds the same info as the isMissingFrom
+	//             table. This is the column you join on to link the two tables
+	//             Optional - if ommitted then assume this table's primary key is the column
+	//             to join on
+	public function addIsMissingFrom($table, $tableCol, $sourceCol = null) {
+		$isMissingFrom[] = [
+			'table' => $table,
+			'tableCol' => $tableCol,
+			'sourceCol' => $sourceCol,
+		];
+	}
+
+	// Helper funtion to build SELECT queries to account for any isMissingFrom tables
+	// Builds a series of LEFT JOINS
+	private function addMissingTablesJoin($sql) {
+		if(!empty($this->isMissingFrom)) {
+			foreach($this->isMissingFrom as $missingFrom) {
+				$sourceCol = $missingFrom['sourceCol'] ?? $this->primaryKey;
+				
+				$sql .= ' LEFT JOIN `' . $missingFrom['table'] . '` ON';
+				$sql .= ' `' . $missingFrom['table'] . '`.`' . $missingFrom['tableCol'] .'` =';
+				$sql .= ' `' . $this->table . '`.`' . $sourceCol . '`';
+			}
+		}
+		return $sql;
+	}
+	
+	// Helper funtion to build SELECT queries to account for any isMissingFrom tables
+	// Builds a series of WHERE constraints
+	// $first parameter tracks if this is the first WHERE constraint. This is required
+	// as the first one needs to be preceded by a 'WHERE' but all subsequent ones need
+	// to be preceded by an 'AND'
+	private function addMissingTablesWhere($first, $sql) {
+		if(!empty($this->isMissingFrom)) {
+			foreach($this->isMissingFrom as $missingFrom) {
+				if ($first) {
+					$sql .= ' WHERE';
+					$first = false;
+				} else {
+					$sql .= ' AND';
+				}
+				$sql .= ' `' . $missingFrom['table'] . '`.`' . $missingFrom['tableCol'] .'` IS NULL';
+			}
+		}
+		return $sql;
 	}
 
 	//This method creates an SQL query to be run on a database
@@ -42,31 +104,39 @@ class DatabaseTable {
 	//SELECT COUNT(*) FROM `joke` WHERE `category` = Programmer jokes;
 	public function total($field = null, $value = null) {
 		$sql = 'SELECT COUNT(*) FROM `' . $this->table . '`';
+
+		$sql = addMissingTablesJoin($sql);
+
 		$parameters = [];
+		$first = true;
 		
 		if (!empty($field)) {
 			$sql .= ' WHERE `' . $field . '` = :value';
 			$parameters = ['value' => $value];
+			$first = false;
 		}
 		
+		$sql = addMissingTablesWhere($first, $sql);
+		
 		$query = $this->query($sql, $parameters);
-		
 		$row = $query->fetch();
-		
 		return $row[0];
 	}
-				
+
 	//This method selects a record from any database table
 	//The query it creates looks like:
 	//SELECT * FROM `joke` WHERE `primaryKey` =:3);
 	public function findById($value) {
-		
-		$sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :value';
-		
+		$sql = 'SELECT * FROM `' . $this->table . '`';
+
+		$sql = addMissingTablesJoin($sql);
+
+		$sql .= ' WHERE `' . $this->primaryKey . '` = :value';
 		$parameters = ['value' => $value];
-		
+
+		$sql = addMissingTablesWhere(false, $sql);
+
 		$query = $this->query($sql, $parameters);
-		
 		return $query->fetchObject($this->className, $this->constructorArgs);
 	}
 
@@ -76,10 +146,14 @@ class DatabaseTable {
 	//If $limit is set, only the first $limit rows will be returned (e.g. $limit = 10, only the first 10 will be returned)
 	//If $offset if set, e.g. 6 when $limit =10, then records 6 to 15 will be returned
 	public function find($column, $value, $orderBy = null, $limit = null, $offset = null) {
-		
-		$sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
-		
+		$sql = 'SELECT * FROM `' . $this->table . '`';
+
+		$sql = addMissingTablesJoin($sql);
+
+		$sql .= ' WHERE `' . $column . '` = :value';
 		$parameters = ['value' => $value];
+
+		$sql = addMissingTablesWhere(false, $sql);
 		
 		if ($orderBy !=null) {
 			$sql .= ' ORDER BY ' . $orderBy;
@@ -106,6 +180,9 @@ class DatabaseTable {
 	//SELECT * FROM `joke` ORDER BY date OFFSET 10;
 	public function findAll($orderBy = null, $limit = null, $offset = null) {
 		$sql = 'SELECT * FROM `' . $this->table . '`';
+
+		$sql = addMissingTablesJoin($sql);
+		$sql = addMissingTablesWhere(true, $sql);
 		
 		if ($orderBy !=null) {
 			$sql .= ' ORDER BY ' . $orderBy;
