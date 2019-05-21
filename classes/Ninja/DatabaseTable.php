@@ -16,10 +16,9 @@ class DatabaseTable {
 	private $constructorArgs;
 	
 	//__construct is used the first time a class is called and its parameters are set
-	//PDOException has a '\' in front because we are in Ninja namespace
-	//and PDOException is an in-built PHP class, in the global namespace
+	//PDO has a '\' in front because we are in Ninja namespace
+	//and PDO is an in-built PHP class, in the global namespace
 	//'\' tells it to start from global namespace
-	//public function __construct(\PDO $pdo, string $table, string $primaryKey)
 	public function __construct(\PDO $pdo, string $table, string $primaryKey, string $className = '\stdClass', array $constructorArgs = []) {
 		$this->pdo = $pdo;
 		$this->table = $table;
@@ -164,9 +163,9 @@ class DatabaseTable {
 	//The query it creates looks like:
 	//DELETE FROM `joke` WHERE `primaryKey` = :1;
 	public function delete($id) {
+		$sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id';
 		$parameters = [':id' => $id];
-
-		$this->query('DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id', $parameters);
+		$this->query($sql, $parameters);
 	}
 	
 	//This method deletes records from any database table, where a particular column is equal to a particular value
@@ -175,7 +174,7 @@ class DatabaseTable {
 	public function deleteWhere($column, $value) {
 		$sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
 		$parameters = ['value' => $value];
-		$sql = $this->query($sql, $parameters);
+		$this->query($sql, $parameters);
 	}	
 	
 	//This method retrieves all records from any database table
