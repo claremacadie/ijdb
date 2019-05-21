@@ -55,7 +55,7 @@ class DatabaseTable {
 		return $row[0];
 	}
 				
-	//This method selects a record from any database table
+	//This method finds a particular record from any database table using its primary key
 	//The query it creates looks like:
 	//SELECT * FROM `joke` WHERE `primaryKey` =:3);
 	public function findById($value) {
@@ -69,7 +69,7 @@ class DatabaseTable {
 		return $sql->fetchObject($this->className, $this->constructorArgs);
 	}
 
-	//This method finds all rows where any column is equal to a particular value
+	//This method finds all records where any column is equal to a particular value
 	//This can be used to check for duplicate email addresses
 	//If $orderBy is set, the result will be ordered
 	//If $limit is set, only the first $limit rows will be returned (e.g. $limit = 10, only the first 10 will be returned)
@@ -100,6 +100,75 @@ class DatabaseTable {
 		return $sql->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
 	}
 
+	//This method retrieves all records from any database table, ordered and offset if required
+	//The query it creates looks like:
+	//SELECT * FROM `joke` ORDER BY date OFFSET 10;
+	public function findAll($orderBy = null, $limit = null, $offset = null) {
+		$sql = 'SELECT * FROM `' . $this->table . '`';
+		
+		if ($orderBy !=null) {
+			$sql .= ' ORDER BY ' . $orderBy;
+		}
+		
+		if ($limit !=null) {
+			$sql .= ' LIMIT ' . $limit;
+		}
+		
+		if ($offset !=null) {
+			$sql .= ' OFFSET ' . $offset;
+		}
+		
+		$result = $this->query($sql);
+		
+		return $result->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
+	}
+
+	//This method saves changes to any database table
+	//This may be inserting a new record (using the insert method below), or 
+	//updating an existing record (using the update method below)
+	public function save($record) {
+			
+		//create an entity of the class to be updated/inserted
+		//...allows specifying of an array in place of several arguments
+		$entity = new $this->className(...$this->constructorArgs);
+		
+		try {
+			//If it is a new record, the primary key will be empty, so set it to null and insert a new record
+			//insert is defined in this DatabaseTable.php file
+			if ($record[$this->primaryKey] == '') {
+				$record[$this->primaryKey] = null;
+			}
+			
+			//The output of the insert method is the id of the last record inserted,
+			//which is the primary key of that record
+			//This adds it to the entity
+			$insertId = $this->insert($record);
+			$entity->{$this->primaryKey} = $insertId;
+		}
+		//PDOException has a '\' in front because we are in Ninja namespace
+		//and PDOException is an in-built PHP class, in the global namespace
+		//'\' tells it to start from global namespace
+		catch (\PDOException $error) {
+			//Otherwise, if the primary key is not empty, update the existing record
+			//update is defined in this DatabaseTable.php file
+			$this->update($record);
+		}
+		
+		//Write the data sent to the database to the class, converting the array to an object
+		//Each time foreach iterates, $key is set to the column name and $value is set to the value being written to that column
+		//if (!empty) prevents vlaues already set (such as primary keys) being overwritten with null
+		foreach ($record as $key => $value) {
+			if (!empty($value)) {
+				$entity->$key = $value;	
+			}			
+		}
+		
+		//Output the entity so that we know the id of a new record, and 
+		//so that the SELECT query is not required to fetch information back from the database that has just been inserted,
+		//this improves performance as there are fewer demands on the database
+		return $entity;
+	}
+
 	//This method inserts a record in any database table
 	//The query it creates looks like:
 	//INSERT INTO `joke` (`joketext`, `jokedate`, `authorId`) VALUES (:joketext, :DateTime, :authorId);
@@ -109,6 +178,7 @@ class DatabaseTable {
 		foreach ($fields as $key => $value) {
 			$sql .= '`' . $key . '`,';
 		}
+		
 		//Remove extraneous ',' from the query
 		$sql = rtrim($sql, ',');
 		
@@ -169,7 +239,7 @@ class DatabaseTable {
 	}
 	
 	//This method deletes records from any database table, where a particular column is equal to a particular value
-	//The query it creas looks like:
+	//The query it creates looks like:
 	//DELETE FROM `joke` WHERE `authorId` = :1;
 	public function deleteWhere($column, $value) {
 		$sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
@@ -177,30 +247,6 @@ class DatabaseTable {
 		$this->query($sql, $parameters);
 	}	
 	
-	//This method retrieves all records from any database table
-	//The query it creates looks like:
-	//SELECT * FROM `joke` ORDER BY date OFFSET 10;
-	public function findAll($orderBy = null, $limit = null, $offset = null) {
-		$sql = 'SELECT * FROM `' . $this->table . '`';
-		
-		if ($orderBy !=null) {
-			$sql .= ' ORDER BY ' . $orderBy;
-		}
-		
-		if ($limit !=null) {
-			$sql .= ' LIMIT ' . $limit;
-		}
-		
-		if ($offset !=null) {
-			$sql .= ' OFFSET ' . $offset;
-		}
-		
-		$result = $this->query($sql);
-		
-		//return $result->fetchAll();
-		return $result->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
-	}
-
 	//This method converts DateTime objects to a string that MySQL understands
 	//DateTime has a '\' in front because we are in Ninja namespace
 	//and DateTime is an in-built PHP class, in the global namespace
@@ -212,50 +258,5 @@ class DatabaseTable {
 			}
 		}
 		return $fields;
-	}
-
-	//This method saves changes to any database table
-	//This may be inserting a new record or updating and existing record
-	public function save($record) {
-			
-		//create an entity of the class to be updated/inserted
-		//...allows specifying of an array in place of several arguments
-		$entity = new $this->className(...$this->constructorArgs);
-		
-		try {
-			//If it is a new record, the primary key will be empty, so set it to null and insert a new record
-			//insert is defined in this DatabaseTable.php file
-			if ($record[$this->primaryKey] == '') {
-				$record[$this->primaryKey] = null;
-			}
-			
-			//The output of the insert method is the id of the last record inserted,
-			//which is the primary key of that record
-			//This adds it to the entity
-			$insertId = $this->insert($record);
-			$entity->{$this->primaryKey} = $insertId;
-		}
-		//PDOException has a '\' in front because we are in Ninja namespace
-		//and PDOException is an in-built PHP class, in the global namespace
-		//'\' tells it to start from global namespace
-		catch (\PDOException $error) {
-			//Otherwise, if the primary key is not empty, update the existing record
-			//update is defined in this DatabaseTable.php file
-			$this->update($record);
-		}
-		
-		//Write the data sent to the database to the class, converting the array to an object
-		//Each time foreach iterates, $key is set to the column name and $value is set to the value being written to that column
-		//if (!empty) prevents vlaues already set (such as primary keys) being overwritten with null
-		foreach ($record as $key => $value) {
-			if (!empty($value)) {
-				$entity->$key = $value;	
-			}			
-		}
-		
-		//Output the entity so that we know the id of a new record, and 
-		//so that the SELECT query is not required to fetch information back from the database that has just been inserted,
-		//this improves performance as there are fewer demands on the database
-		return $entity;
 	}
 }
